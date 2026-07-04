@@ -5,15 +5,16 @@
     'columns' => 4,
 ])
 
-<section class="py-16 bg-gray-50">
-    <div class="container mx-auto px-4">
+<section class="section-padding bg-white">
+    <div class="container-custom">
         <!-- Header -->
-        <div class="flex items-center justify-between mb-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
             <div>
-                <h2 class="text-3xl font-display font-bold text-gray-800">{{ $title }}</h2>
-                <p class="text-gray-500 mt-1">{{ $subtitle }}</p>
+                <span class="eyebrow">Koleksi Kami</span>
+                <h2 class="section-title">{{ $title }}</h2>
+                <p class="section-subtitle">{{ $subtitle }}</p>
             </div>
-            <a href="{{ route('products.index') }}" class="text-primary font-semibold hover:underline flex items-center gap-1">
+            <a href="{{ route('products.index') }}" class="text-secondary font-bold text-sm uppercase tracking-widest hover:text-secondary-dark transition flex items-center gap-2 mb-2">
                 Lihat Semua
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
