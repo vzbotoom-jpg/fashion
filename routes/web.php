@@ -50,6 +50,15 @@ Route::prefix('contact')->name('contact.')->group(function () {
     Route::post('/', [ContactController::class, 'store'])->name('store');
 });
 
+// Privacy Policy & Terms
+Route::get('/kebijakan-privasi', function () {
+    return view('frontend.privacy');
+})->name('privacy');
+
+Route::get('/syarat-ketentuan', function () {
+    return view('frontend.terms');
+})->name('terms');
+
 // ============================================================
 // AUTH ROUTES
 // ============================================================
