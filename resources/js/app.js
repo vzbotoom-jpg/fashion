@@ -4,6 +4,7 @@
 
 import Alpine from 'alpinejs';
 import './bootstrap';
+import './frontend';
 
 // ===== ALPINE.JS =====
 window.Alpine = Alpine;
