@@ -6,6 +6,9 @@
     <!-- Hero Section -->
     <x-sections.hero />
 
+    <!-- Features Section -->
+    <x-sections.features />
+
     <!-- Categories -->
     <x-sections.categories-grid :categories="$categories ?? []" />
 
