@@ -19,15 +19,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
-<body class="font-sans antialiased bg-gray-50 text-slate-900">
-    <div class="min-h-screen flex flex-col bg-gray-50">
+<body class="font-sans antialiased bg-white text-gray-900">
+    <div class="min-h-screen flex flex-col">
         <!-- Header -->
         @include('layouts.partials.frontend.header')
         
-        <!-- Breadcrumb -->
-        @if(!Route::is('home'))
-            @include('layouts.partials.frontend.breadcrumb')
-        @endif
         
         <!-- Alerts -->
         @include('layouts.partials.frontend.alerts')

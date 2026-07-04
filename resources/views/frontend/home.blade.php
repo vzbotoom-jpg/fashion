@@ -6,6 +6,8 @@
     <!-- Hero Section -->
     <x-sections.hero />
 
+    <!-- Features -->
+=======
     <!-- Features Section -->
     <x-sections.features />
 
@@ -39,5 +41,5 @@
     <x-sections.social-proof count="500" icon="🌟" />
 
     <!-- Newsletter -->
-    <x-sections.newsletter />
+    @include('components.sections.newsletter')
 @endsection
