@@ -7,8 +7,6 @@
     <x-sections.hero />
 
     <!-- Features -->
-=======
-    <!-- Features Section -->
     <x-sections.features />
 
     <!-- Categories -->
