@@ -6,6 +6,9 @@
     <!-- Hero Section -->
     <x-sections.hero />
 
+    <!-- Features -->
+    <x-sections.features />
+
     <!-- Categories -->
     <x-sections.categories-grid :categories="$categories ?? []" />
 
@@ -36,5 +39,5 @@
     <x-sections.social-proof count="500" icon="🌟" />
 
     <!-- Newsletter -->
-    <x-sections.newsletter />
+    @include('components.sections.newsletter')
 @endsection
