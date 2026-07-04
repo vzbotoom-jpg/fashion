@@ -10,45 +10,52 @@
 ])
 
 <div {{ $attributes->merge(['class' => 'checkout-summary']) }}>
-    <h3 class="text-lg font-semibold text-white mb-4">Ringkasan Pesanan</h3>
+    <h3 class="text-xl font-bold text-gray-900 mb-6">Ringkasan Pesanan</h3>
 
-    <div class="space-y-3">
+    <div class="space-y-4">
         <!-- Items -->
         @if($cart && $cart->items->isNotEmpty())
-            <div class="max-h-60 overflow-y-auto space-y-2">
+            <div class="max-h-80 overflow-y-auto space-y-4 pr-2 -mr-2">
                 @foreach($cart->items as $item)
-                    <div class="checkout-summary-item">
-                        <span class="text-gray-400">
-                            {{ $item->product->name }} 
-                            <span class="text-gray-500">x{{ $item->quantity }}</span>
-                            <span class="text-xs text-gray-500">({{ $item->size->name }})</span>
-                        </span>
-                        <span class="font-medium text-white">
+                    <div class="flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="relative">
+                                <img src="{{ asset('storage/' . $item->product->main_image) }}" alt="{{ $item->product->name }}" class="w-16 h-16 object-cover rounded-lg border border-gray-100 bg-gray-50">
+                                <span class="absolute -top-2 -right-2 w-5 h-5 bg-gray-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full">
+                                    {{ $item->quantity }}
+                                </span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-sm font-bold text-gray-900">{{ $item->product->name }}</span>
+                                <span class="text-xs text-gray-500">{{ $item->size->name }}</span>
+                            </div>
+                        </div>
+                        <span class="text-sm font-semibold text-gray-900">
                             Rp {{ number_format($item->price * $item->quantity, 0, ',', '.') }}
                         </span>
                     </div>
                 @endforeach
             </div>
-            <div class="border-t border-white/10 my-3"></div>
+            <div class="border-t border-gray-100 my-6"></div>
         @endif
 
         <!-- Subtotal -->
         <div class="checkout-summary-item">
-            <span class="text-gray-400">Subtotal</span>
-            <span class="font-medium text-white">
+            <span class="text-gray-500">Subtotal</span>
+            <span class="font-semibold text-gray-900">
                 Rp {{ number_format($subtotal, 0, ',', '.') }}
             </span>
         </div>
 
         <!-- Shipping -->
         <div class="checkout-summary-item">
-            <span class="text-gray-400">Ongkos Kirim</span>
+            <span class="text-gray-500">Ongkos Kirim</span>
             @if($shipping > 0)
-                <span class="font-medium text-white">
+                <span class="font-semibold text-gray-900">
                     Rp {{ number_format($shipping, 0, ',', '.') }}
                 </span>
             @else
-                <span class="text-secondary font-medium flex items-center gap-1">
+                <span class="text-primary font-bold flex items-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
@@ -80,7 +87,10 @@
         <!-- Grand Total -->
         <div class="checkout-summary-total">
             <div class="flex items-center justify-between">
-                <span class="text-base font-semibold text-white">Total</span>
+                <div>
+                    <span class="text-lg font-bold text-gray-900 block">Total</span>
+                    <span class="text-xs text-gray-400 font-medium uppercase tracking-wider">Termasuk PPN</span>
+                </div>
                 <span class="checkout-summary-grand-total">
                     Rp {{ number_format($grandTotal, 0, ',', '.') }}
                 </span>
@@ -89,20 +99,15 @@
 
         <!-- Action Buttons -->
         @if($showActions)
-            <div class="space-y-3 mt-4">
-                <a href="{{ route('customer.checkout') }}" class="w-full btn-primary text-center block flex items-center justify-center gap-2">
-                    <!-- Shopping Cart Icon -->
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                    </svg>
+            <div class="space-y-4 mt-8">
+                <a href="{{ route('customer.checkout.index') }}" class="w-full btn-primary !py-4 text-lg">
                     Lanjutkan ke Pembayaran
                 </a>
-                <a href="{{ route('customer.cart') }}" class="w-full btn-secondary text-center block flex items-center justify-center gap-2">
-                    <!-- Arrow Left Icon -->
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="{{ route('products.index') }}" class="w-full btn-secondary !py-4 text-gray-500 hover:text-gray-900 border-none shadow-none">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                     </svg>
-                    Kembali ke Keranjang
+                    Lanjut Belanja
                 </a>
             </div>
         @endif

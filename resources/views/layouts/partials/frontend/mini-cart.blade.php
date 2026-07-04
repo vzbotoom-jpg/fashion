@@ -60,7 +60,7 @@
                     <span class="font-medium text-gray-800">Total:</span>
                     <span class="font-bold text-primary text-lg">Rp {{ number_format($cartTotal, 0, ',', '.') }}</span>
                 </div>
-                <a href="{{ route('customer.cart') }}" class="btn-primary w-full text-center py-2 px-4 rounded-lg block">
+                <a href="{{ route('customer.cart.index') }}" class="btn-primary w-full text-center py-2 px-4 rounded-lg block">
                     Lihat Keranjang
                 </a>
             </div>

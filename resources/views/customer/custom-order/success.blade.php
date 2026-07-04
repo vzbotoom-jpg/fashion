@@ -51,7 +51,7 @@
 
                 <!-- Action Buttons -->
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="{{ route('customer.orders') }}" class="btn-primary px-6 py-3 rounded-lg inline-block flex items-center justify-center gap-2">
+                    <a href="{{ route('customer.orders.index') }}" class="btn-primary px-6 py-3 rounded-lg inline-block flex items-center justify-center gap-2">
                         <!-- Package Icon -->
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
