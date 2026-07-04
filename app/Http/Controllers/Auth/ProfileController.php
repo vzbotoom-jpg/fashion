@@ -10,17 +10,24 @@ use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'role:customer']);
-    }
+    // ❌ HAPUS __construct() ini:
+    // public function __construct()
+    // {
+    //     $this->middleware(['auth', 'role:customer']);
+    // }
 
+    /**
+     * Show the profile edit form.
+     */
     public function edit()
     {
         $user = Auth::user();
         return view('customer.profile.edit', compact('user'));
     }
 
+    /**
+     * Update the user's profile.
+     */
     public function update(Request $request)
     {
         $user = Auth::user();
@@ -45,6 +52,7 @@ class ProfileController extends Controller
 
         $data = $request->only(['name', 'email', 'phone', 'address', 'city', 'province', 'postal_code']);
 
+        // Update password jika diisi
         if ($request->filled('current_password') && $request->filled('new_password')) {
             if (!Hash::check($request->current_password, $user->password)) {
                 return redirect()->back()
