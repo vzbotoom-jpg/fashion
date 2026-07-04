@@ -6,11 +6,11 @@
 
 @theme {
     /* ===== COLORS - Shopify Inspired Light Mode ===== */
-    --color-primary: #1a1a1a;
-    --color-primary-dark: #000000;
-    --color-primary-light: #404040;
-    --color-secondary: #008060; /* Shopify Green */
-    --color-secondary-dark: #004c3f;
+    --color-primary: #008060; /* Shopify Green as Primary CTA */
+    --color-primary-dark: #004c3f;
+    --color-primary-light: #00a47c;
+    --color-secondary: #1a1a1a; /* Black as Secondary */
+    --color-secondary-dark: #000000;
 
     --color-success: #008060;
     --color-warning: #ffb800;
@@ -43,7 +43,7 @@
     /* ===== SPACING ===== */
     --spacing: 0.25rem;
     --container-max-width: 1280px;
-    --container-padding: 1.5rem;
+    --container-padding: 2rem;
 
     /* ===== BORDER RADIUS ===== */
     --radius-sm: 0.25rem;
@@ -92,11 +92,11 @@
 @layer components {
     /* ===== BUTTONS ===== */
     .btn-primary {
-        @apply bg-primary hover:bg-primary-light text-white font-semibold py-3 px-6 rounded-md transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed;
+        @apply bg-primary hover:bg-primary-dark text-white font-semibold py-2.5 px-6 rounded-md transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center text-center;
     }
 
     .btn-secondary {
-        @apply bg-white hover:bg-gray-50 text-gray-900 font-semibold py-3 px-6 rounded-md border border-gray-300 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed;
+        @apply bg-white hover:bg-gray-50 text-gray-900 font-semibold py-2.5 px-6 rounded-md border border-gray-300 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center text-center;
     }
 
     .btn-outline {
@@ -150,7 +150,7 @@
 
     /* ===== FORM ELEMENTS ===== */
     .form-input {
-        @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-secondary focus:border-secondary transition bg-white text-gray-900 placeholder-gray-400 disabled:opacity-50;
+        @apply w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-primary focus:border-primary transition bg-white text-gray-900 placeholder-gray-400 disabled:opacity-50 shadow-xs;
     }
 
     .form-label {

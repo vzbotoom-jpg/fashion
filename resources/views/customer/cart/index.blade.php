@@ -3,20 +3,19 @@
 @section('title', 'Keranjang Belanja - ' . config('app.name'))
 
 @section('content')
-<section class="section-padding bg-gray-50">
+<section class="section-padding bg-white">
     <div class="container-custom">
         <!-- Header -->
-        <div class="mb-12">
-            <span class="eyebrow">Pesanan Anda</span>
+        <div class="mb-16">
             <h1 class="section-title">Keranjang Belanja</h1>
             <p class="section-subtitle">Periksa kembali item pilihan Anda sebelum melanjutkan ke checkout.</p>
         </div>
 
         @if($cart && $cart->items->isNotEmpty())
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-16 items-start">
                 <!-- Cart Items -->
                 <div class="lg:col-span-2">
-                    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                    <div class="border-y border-gray-100">
                         <div class="divide-y divide-gray-100">
                             @foreach($cart->items as $item)
                                 <x-sections.cart-item :item="$item" />
@@ -24,7 +23,7 @@
                         </div>
 
                         <!-- Clear Cart -->
-                        <div class="p-6 bg-gray-50/50 border-t border-gray-100">
+                        <div class="py-6 flex justify-end">
                             <form action="{{ route('customer.cart.clear') }}" method="POST" class="inline">
                                 @csrf
                                 @method('DELETE')
@@ -39,14 +38,6 @@
                         </div>
                     </div>
 
-                    <div class="mt-8">
-                        <a href="{{ route('products.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-secondary transition">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                            </svg>
-                            Lanjut Belanja
-                        </a>
-                    </div>
                 </div>
 
                 <!-- Cart Summary -->

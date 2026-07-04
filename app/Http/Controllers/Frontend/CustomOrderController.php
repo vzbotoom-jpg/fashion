@@ -23,7 +23,6 @@ class CustomOrderController extends Controller
     ) {
         $this->customOrderService = $customOrderService;
         $this->notificationService = $notificationService;
-        $this->middleware(['auth', 'role:customer'])->except(['success']);
     }
 
     public function create(Request $request)

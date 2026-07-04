@@ -29,7 +29,6 @@ class CheckoutController extends Controller
         $this->checkoutService = $checkoutService;
         $this->paymentService = $paymentService;
         $this->notificationService = $notificationService;
-        $this->middleware(['auth', 'role:customer']);
     }
 
     public function index()
@@ -37,7 +36,7 @@ class CheckoutController extends Controller
         $cart = $this->cartService->getCart(Auth::id());
         
         if ($cart->items->isEmpty()) {
-            return redirect()->route('customer.cart')
+            return redirect()->route('customer.cart.index')
                 ->with('error', 'Keranjang Anda kosong!');
         }
 
@@ -68,7 +67,7 @@ class CheckoutController extends Controller
         $cart = $this->cartService->getCart(Auth::id());
         
         if ($cart->items->isEmpty()) {
-            return redirect()->route('customer.cart')
+            return redirect()->route('customer.cart.index')
                 ->with('error', 'Keranjang Anda kosong!');
         }
 

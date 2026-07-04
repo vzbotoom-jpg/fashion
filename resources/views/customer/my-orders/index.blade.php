@@ -3,19 +3,18 @@
 @section('title', 'Pesanan Saya - ' . config('app.name'))
 
 @section('content')
-<section class="section-padding bg-gray-50">
+<section class="section-padding bg-white">
     <div class="container-custom">
         <!-- Header -->
-        <div class="mb-12">
-            <span class="eyebrow">Aktivitas Belanja</span>
+        <div class="mb-16">
             <h1 class="section-title">Pesanan Saya</h1>
             <p class="section-subtitle">Pantau status pesanan, pre-order, dan custom order Anda di satu tempat.</p>
         </div>
 
         <!-- Tabs -->
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-12">
-            <div class="flex overflow-x-auto border-b border-gray-100">
-                <button onclick="switchTab('orders')" class="tab-btn px-8 py-5 text-sm font-bold text-secondary border-b-2 border-secondary transition-all whitespace-nowrap" data-tab="orders">
+        <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden mb-12 shadow-xs">
+            <div class="flex overflow-x-auto border-b border-gray-200 bg-gray-50/50">
+                <button onclick="switchTab('orders')" class="tab-btn px-8 py-5 text-sm font-bold text-primary border-b-2 border-primary transition-all whitespace-nowrap" data-tab="orders">
                     <span class="flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
@@ -44,31 +43,43 @@
             <!-- Orders Tab -->
             <div id="tab-orders" class="tab-content">
                 @if($orders->isNotEmpty())
-                    <div class="divide-y divide-gray-100">
-                        @foreach($orders as $order)
-                            <div class="p-6 md:p-8 hover:bg-gray-50 transition-colors">
-                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                                    <div class="space-y-1">
-                                        <div class="flex items-center gap-3">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50/50 border-b border-gray-100">
+                                    <th class="px-8 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">No. Pesanan</th>
+                                    <th class="px-8 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Tanggal</th>
+                                    <th class="px-8 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Status</th>
+                                    <th class="px-8 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest text-right">Total</th>
+                                    <th class="px-8 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                @foreach($orders as $order)
+                                    <tr class="hover:bg-gray-50/50 transition-colors">
+                                        <td class="px-8 py-6">
                                             <span class="text-sm font-bold text-gray-900">#{{ $order->order_number }}</span>
+                                        </td>
+                                        <td class="px-8 py-6">
+                                            <span class="text-sm text-gray-500">{{ $order->created_at->format('d M Y') }}</span>
+                                        </td>
+                                        <td class="px-8 py-6">
                                             <span class="badge {{ $order->status === 'completed' ? 'badge-success' : ($order->status === 'cancelled' ? 'badge-danger' : 'badge-warning') }}">
                                                 {{ $order->status_label }}
                                             </span>
-                                        </div>
-                                        <p class="text-xs text-gray-500">{{ $order->created_at->format('d M Y, H:i') }} • {{ $order->items->count() }} Produk</p>
-                                    </div>
-                                    <div class="flex items-center justify-between md:justify-end gap-8">
-                                        <div class="text-right">
-                                            <p class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-1">Total Tagihan</p>
-                                            <p class="text-lg font-bold text-gray-900">Rp {{ number_format($order->grand_total, 0, ',', '.') }}</p>
-                                        </div>
-                                        <a href="{{ route('customer.orders.show', $order->id) }}" class="btn-secondary btn-sm">
-                                            Lihat Detail
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+                                        </td>
+                                        <td class="px-8 py-6 text-right">
+                                            <span class="text-sm font-bold text-gray-900">Rp {{ number_format($order->grand_total, 0, ',', '.') }}</span>
+                                        </td>
+                                        <td class="px-8 py-6 text-right">
+                                            <a href="{{ route('customer.orders.show', $order->id) }}" class="text-primary hover:text-primary-dark text-sm font-bold transition">
+                                                Detail
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                     <div class="p-6 border-t border-gray-100">
                         {{ $orders->links() }}
@@ -176,11 +187,11 @@
     function switchTab(tab) {
         // Update buttons
         document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('text-secondary', 'border-secondary');
+            btn.classList.remove('text-primary', 'border-primary');
             btn.classList.add('text-gray-400', 'border-transparent');
             if (btn.dataset.tab === tab) {
                 btn.classList.remove('text-gray-400', 'border-transparent');
-                btn.classList.add('text-secondary', 'border-secondary');
+                btn.classList.add('text-primary', 'border-primary');
             }
         });
 

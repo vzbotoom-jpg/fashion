@@ -11,11 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderTrackingController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'role:customer']);
-    }
-
     public function index()
     {
         $orders = Order::where('user_id', Auth::id())

@@ -23,7 +23,6 @@ class PreOrderController extends Controller
     ) {
         $this->preOrderService = $preOrderService;
         $this->notificationService = $notificationService;
-        $this->middleware(['auth', 'role:customer'])->except(['success']);
     }
 
     public function create($productSlug)

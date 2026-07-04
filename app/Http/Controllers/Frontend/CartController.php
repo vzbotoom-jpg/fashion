@@ -17,7 +17,6 @@ class CartController extends Controller
     public function __construct(CartService $cartService)
     {
         $this->cartService = $cartService;
-        $this->middleware(['auth', 'role:customer']);
     }
 
     public function index()
@@ -76,7 +75,7 @@ class CartController extends Controller
     {
         $this->cartService->removeFromCart(Auth::id(), $id);
 
-        return redirect()->route('customer.cart')
+        return redirect()->route('customer.cart.index')
             ->with('success', 'Produk berhasil dihapus dari keranjang!');
     }
 
@@ -93,7 +92,7 @@ class CartController extends Controller
 
         $this->cartService->updateCartQuantity(Auth::id(), $id, $request->quantity);
 
-        return redirect()->route('customer.cart')
+        return redirect()->route('customer.cart.index')
             ->with('success', 'Keranjang berhasil diperbarui!');
     }
 
@@ -101,7 +100,7 @@ class CartController extends Controller
     {
         $this->cartService->clearCart(Auth::id());
 
-        return redirect()->route('customer.cart')
+        return redirect()->route('customer.cart.index')
             ->with('success', 'Keranjang berhasil dikosongkan!');
     }
 }
