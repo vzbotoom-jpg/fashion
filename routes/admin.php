@@ -40,6 +40,11 @@ Route::middleware(['auth', 'role:admin,super_admin'])
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         // ============================================================
+        // ORDER LIST
+        // ============================================================
+        Route::get('/orders', [OrderReportController::class, 'orders'])->name('orders.index');
+
+        // ============================================================
         // PRODUCT MANAGEMENT
         // ============================================================
         Route::prefix('products')->name('products.')->group(function () {
