@@ -3,173 +3,168 @@
 @section('title', 'Pesanan Saya - ' . config('app.name'))
 
 @section('content')
-<section class="py-12 bg-gray-50">
-    <div class="container mx-auto px-4">
-        <h1 class="text-3xl font-display font-bold text-gray-800 mb-8 flex items-center gap-3">
-            <!-- Package Icon -->
-            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-            </svg>
-            Pesanan Saya
-        </h1>
+<section class="section-padding bg-gray-50">
+    <div class="container-custom">
+        <!-- Header -->
+        <div class="mb-12">
+            <span class="eyebrow">Aktivitas Belanja</span>
+            <h1 class="section-title">Pesanan Saya</h1>
+            <p class="section-subtitle">Pantau status pesanan, pre-order, dan custom order Anda di satu tempat.</p>
+        </div>
 
         <!-- Tabs -->
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
-            <div class="flex overflow-x-auto border-b border-gray-200">
-                <button onclick="switchTab('orders')" class="tab-btn px-6 py-3 font-medium text-primary border-b-2 border-primary transition" data-tab="orders">
-                    <!-- Shopping Bag Icon -->
-                    <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                    </svg>
-                    Pesanan
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-12">
+            <div class="flex overflow-x-auto border-b border-gray-100">
+                <button onclick="switchTab('orders')" class="tab-btn px-8 py-5 text-sm font-bold text-secondary border-b-2 border-secondary transition-all whitespace-nowrap" data-tab="orders">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                        </svg>
+                        Pesanan Reguler
+                    </span>
                 </button>
-                <button onclick="switchTab('preorders')" class="tab-btn px-6 py-3 font-medium text-gray-500 hover:text-gray-700 transition" data-tab="preorders">
-                    <!-- Package Icon -->
-                    <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                    </svg>
-                    Pre-Order
+                <button onclick="switchTab('preorders')" class="tab-btn px-8 py-5 text-sm font-bold text-gray-400 hover:text-gray-900 border-b-2 border-transparent transition-all whitespace-nowrap" data-tab="preorders">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                        </svg>
+                        Pre-Order
+                    </span>
                 </button>
-                <button onclick="switchTab('customorders')" class="tab-btn px-6 py-3 font-medium text-gray-500 hover:text-gray-700 transition" data-tab="customorders">
-                    <!-- Paint Brush Icon -->
-                    <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-                    </svg>
-                    Custom Order
+                <button onclick="switchTab('customorders')" class="tab-btn px-8 py-5 text-sm font-bold text-gray-400 hover:text-gray-900 border-b-2 border-transparent transition-all whitespace-nowrap" data-tab="customorders">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                        </svg>
+                        Custom Order
+                    </span>
                 </button>
             </div>
 
             <!-- Orders Tab -->
-            <div id="tab-orders" class="tab-content p-4">
+            <div id="tab-orders" class="tab-content">
                 @if($orders->isNotEmpty())
-                    <div class="space-y-4">
+                    <div class="divide-y divide-gray-100">
                         @foreach($orders as $order)
-                            <div class="bg-gray-50 rounded-lg p-4 hover:shadow transition">
-                                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                                    <div>
-                                        <p class="font-semibold text-gray-800">#{{ $order->order_number }}</p>
-                                        <p class="text-sm text-gray-500">{{ $order->created_at->format('d M Y H:i') }}</p>
-                                        <p class="text-sm text-gray-500">{{ $order->items->count() }} produk</p>
+                            <div class="p-6 md:p-8 hover:bg-gray-50 transition-colors">
+                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                    <div class="space-y-1">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-sm font-bold text-gray-900">#{{ $order->order_number }}</span>
+                                            <span class="badge {{ $order->status === 'completed' ? 'badge-success' : ($order->status === 'cancelled' ? 'badge-danger' : 'badge-warning') }}">
+                                                {{ $order->status_label }}
+                                            </span>
+                                        </div>
+                                        <p class="text-xs text-gray-500">{{ $order->created_at->format('d M Y, H:i') }} • {{ $order->items->count() }} Produk</p>
                                     </div>
-                                    <div class="mt-2 md:mt-0 flex flex-wrap items-center gap-3">
-                                        <span class="badge {{ $order->status === 'completed' ? 'badge-success' : ($order->status === 'cancelled' ? 'badge-danger' : 'badge-warning') }}">
-                                            {{ $order->status_label }}
-                                        </span>
-                                        <span class="font-bold text-primary">
-                                            Rp {{ number_format($order->grand_total, 0, ',', '.') }}
-                                        </span>
-                                        <a href="{{ route('customer.orders.show', $order->id) }}" class="text-primary hover:underline text-sm flex items-center gap-1">
-                                            Detail
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                            </svg>
+                                    <div class="flex items-center justify-between md:justify-end gap-8">
+                                        <div class="text-right">
+                                            <p class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-1">Total Tagihan</p>
+                                            <p class="text-lg font-bold text-gray-900">Rp {{ number_format($order->grand_total, 0, ',', '.') }}</p>
+                                        </div>
+                                        <a href="{{ route('customer.orders.show', $order->id) }}" class="btn-secondary btn-sm">
+                                            Lihat Detail
                                         </a>
                                     </div>
                                 </div>
                             </div>
                         @endforeach
                     </div>
-                    <div class="mt-4">
+                    <div class="p-6 border-t border-gray-100">
                         {{ $orders->links() }}
                     </div>
                 @else
-                    <div class="text-center py-8">
-                        <!-- Shopping Cart Icon -->
-                        <svg class="w-16 h-16 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                        </svg>
-                        <p class="text-gray-500">Belum ada pesanan</p>
-                        <a href="{{ route('products.index') }}" class="text-primary hover:underline mt-2 inline-block">
-                            Mulai Belanja
-                        </a>
+                    <div class="text-center py-20 px-6">
+                        <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                            <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Belum ada pesanan</h3>
+                        <p class="text-gray-500 mb-8 max-w-xs mx-auto">Anda belum melakukan pesanan reguler apa pun sejauh ini.</p>
+                        <a href="{{ route('products.index') }}" class="btn-primary btn-sm">Mulai Belanja</a>
                     </div>
                 @endif
             </div>
 
             <!-- Pre-Orders Tab -->
-            <div id="tab-preorders" class="tab-content hidden p-4">
+            <div id="tab-preorders" class="tab-content hidden">
                 @if($preOrders->isNotEmpty())
-                    <div class="space-y-4">
+                    <div class="divide-y divide-gray-100">
                         @foreach($preOrders as $preOrder)
-                            <div class="bg-gray-50 rounded-lg p-4 hover:shadow transition">
-                                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                                    <div>
-                                        <p class="font-semibold text-gray-800">#{{ $preOrder->order_number }}</p>
-                                        <p class="text-sm text-gray-500">{{ $preOrder->product->name }}</p>
-                                        <p class="text-sm text-gray-500">{{ $preOrder->size->name }} x {{ $preOrder->quantity }}</p>
+                            <div class="p-6 md:p-8 hover:bg-gray-50 transition-colors">
+                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                    <div class="space-y-1">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-sm font-bold text-gray-900">#{{ $preOrder->order_number }}</span>
+                                            <span class="badge {{ $preOrder->status === 'completed' ? 'badge-success' : ($preOrder->status === 'cancelled' ? 'badge-danger' : 'badge-warning') }}">
+                                                {{ $preOrder->status_label }}
+                                            </span>
+                                        </div>
+                                        <p class="text-xs font-medium text-gray-700">{{ $preOrder->product->name }}</p>
+                                        <p class="text-xs text-gray-500">{{ $preOrder->size->name }} x {{ $preOrder->quantity }} • {{ $preOrder->created_at->format('d M Y') }}</p>
                                     </div>
-                                    <div class="mt-2 md:mt-0 flex flex-wrap items-center gap-3">
-                                        <span class="badge {{ $preOrder->status === 'completed' ? 'badge-success' : ($preOrder->status === 'cancelled' ? 'badge-danger' : 'badge-warning') }}">
-                                            {{ $preOrder->status_label }}
-                                        </span>
-                                        <a href="#" class="text-primary hover:underline text-sm flex items-center gap-1">
-                                            Detail
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                            </svg>
-                                        </a>
+                                    <div class="flex items-center justify-end gap-4">
+                                        <a href="#" class="btn-secondary btn-sm">Detail</a>
                                     </div>
                                 </div>
                             </div>
                         @endforeach
                     </div>
                 @else
-                    <div class="text-center py-8">
-                        <!-- Package Icon -->
-                        <svg class="w-16 h-16 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                        </svg>
-                        <p class="text-gray-500">Belum ada pre-order</p>
-                        <a href="{{ route('products.index') }}" class="text-primary hover:underline mt-2 inline-block">
-                            Lihat Produk
-                        </a>
+                    <div class="text-center py-20 px-6">
+                        <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                            <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Belum ada pre-order</h3>
+                        <p class="text-gray-500 mb-8 max-w-xs mx-auto">Anda belum memesan produk pre-order dengan ukuran kustom.</p>
+                        <a href="{{ route('products.index') }}" class="btn-primary btn-sm">Lihat Produk</a>
                     </div>
                 @endif
             </div>
 
             <!-- Custom Orders Tab -->
-            <div id="tab-customorders" class="tab-content hidden p-4">
+            <div id="tab-customorders" class="tab-content hidden">
                 @if($customOrders->isNotEmpty())
-                    <div class="space-y-4">
+                    <div class="divide-y divide-gray-100">
                         @foreach($customOrders as $customOrder)
-                            <div class="bg-gray-50 rounded-lg p-4 hover:shadow transition">
-                                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                                    <div>
-                                        <p class="font-semibold text-gray-800">#{{ $customOrder->order_number }}</p>
-                                        <p class="text-sm text-gray-500">
+                            <div class="p-6 md:p-8 hover:bg-gray-50 transition-colors">
+                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                    <div class="space-y-1">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-sm font-bold text-gray-900">#{{ $customOrder->order_number }}</span>
+                                            <span class="badge {{ $customOrder->status === 'completed' ? 'badge-success' : ($customOrder->status === 'cancelled' ? 'badge-danger' : 'badge-warning') }}">
+                                                {{ $customOrder->status_label }}
+                                            </span>
+                                        </div>
+                                        <p class="text-xs font-medium text-gray-700">
                                             @if($customOrder->product)
                                                 {{ $customOrder->product->name }}
                                             @else
-                                                Custom Design
+                                                Custom Design Order
                                             @endif
                                         </p>
-                                        <p class="text-sm text-gray-500">{{ $customOrder->size->name }} x {{ $customOrder->quantity }}</p>
+                                        <p class="text-xs text-gray-500">{{ $customOrder->size->name }} x {{ $customOrder->quantity }} • {{ $customOrder->created_at->format('d M Y') }}</p>
                                     </div>
-                                    <div class="mt-2 md:mt-0 flex flex-wrap items-center gap-3">
-                                        <span class="badge {{ $customOrder->status === 'completed' ? 'badge-success' : ($customOrder->status === 'cancelled' ? 'badge-danger' : 'badge-warning') }}">
-                                            {{ $customOrder->status_label }}
-                                        </span>
-                                        <a href="#" class="text-primary hover:underline text-sm flex items-center gap-1">
-                                            Detail
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                            </svg>
-                                        </a>
+                                    <div class="flex items-center justify-end gap-4">
+                                        <a href="#" class="btn-secondary btn-sm">Detail</a>
                                     </div>
                                 </div>
                             </div>
                         @endforeach
                     </div>
                 @else
-                    <div class="text-center py-8">
-                        <!-- Paint Brush Icon -->
-                        <svg class="w-16 h-16 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-                        </svg>
-                        <p class="text-gray-500">Belum ada custom order</p>
-                        <a href="{{ route('customer.custom-order.create') }}" class="text-primary hover:underline mt-2 inline-block">
-                            Buat Custom Order
-                        </a>
+                    <div class="text-center py-20 px-6">
+                        <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                            <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Belum ada custom order</h3>
+                        <p class="text-gray-500 mb-8 max-w-xs mx-auto">Wujudkan desain pakaian impian Anda melalui layanan custom order kami.</p>
+                        <a href="{{ route('customer.custom-order.create') }}" class="btn-primary btn-sm">Buat Custom Order</a>
                     </div>
                 @endif
             </div>
@@ -181,11 +176,11 @@
     function switchTab(tab) {
         // Update buttons
         document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('text-primary', 'border-primary', 'border-b-2');
-            btn.classList.add('text-gray-500');
+            btn.classList.remove('text-secondary', 'border-secondary');
+            btn.classList.add('text-gray-400', 'border-transparent');
             if (btn.dataset.tab === tab) {
-                btn.classList.remove('text-gray-500');
-                btn.classList.add('text-primary', 'border-primary', 'border-b-2');
+                btn.classList.remove('text-gray-400', 'border-transparent');
+                btn.classList.add('text-secondary', 'border-secondary');
             }
         });
 
@@ -196,22 +191,4 @@
         document.getElementById(`tab-${tab}`).classList.remove('hidden');
     }
 </script>
-
-<style>
-    .badge {
-        @apply px-3 py-1 rounded-full text-xs font-medium;
-    }
-    .badge-success {
-        @apply bg-green-100 text-green-800;
-    }
-    .badge-warning {
-        @apply bg-yellow-100 text-yellow-800;
-    }
-    .badge-danger {
-        @apply bg-red-100 text-red-800;
-    }
-    .badge-info {
-        @apply bg-blue-100 text-blue-800;
-    }
-</style>
 @endsection

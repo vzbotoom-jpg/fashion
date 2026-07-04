@@ -6,8 +6,6 @@
     <!-- Hero Section -->
     <x-sections.hero />
 
-    <!-- Features -->
-=======
     <!-- Features Section -->
     <x-sections.features />
 

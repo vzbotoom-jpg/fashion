@@ -5,10 +5,11 @@
 @section('content')
 <section class="section-padding bg-gray-50">
     <div class="container-custom">
-        <!-- Judul Langsung - TANPA BREADCRUMB -->
+        <!-- Header -->
         <div class="mb-12">
             <span class="eyebrow">Pesanan Anda</span>
             <h1 class="section-title">Keranjang Belanja</h1>
+            <p class="section-subtitle">Periksa kembali item pilihan Anda sebelum melanjutkan ke checkout.</p>
         </div>
 
         @if($cart && $cart->items->isNotEmpty())
@@ -36,6 +37,15 @@
                                 </button>
                             </form>
                         </div>
+                    </div>
+
+                    <div class="mt-8">
+                        <a href="{{ route('products.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-secondary transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                            </svg>
+                            Lanjut Belanja
+                        </a>
                     </div>
                 </div>
 
