@@ -14,29 +14,18 @@
                 <h2 class="section-title">{{ $title }}</h2>
                 <p class="section-subtitle">{{ $subtitle }}</p>
             </div>
-            <a href="{{ route('products.index') }}" class="btn-secondary flex items-center gap-2 group">
+            <a href="{{ route('products.index') }}" class="btn-secondary flex items-center gap-2 group text-sm !py-2.5">
                 Lihat Semua Produk
                 <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-=======
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-            <div>
-                <span class="eyebrow">Koleksi Kami</span>
-                <h2 class="section-title">{{ $title }}</h2>
-                <p class="section-subtitle">{{ $subtitle }}</p>
-            </div>
-            <a href="{{ route('products.index') }}" class="text-secondary font-bold text-sm uppercase tracking-widest hover:text-secondary-dark transition flex items-center gap-2 mb-2">
-                Lihat Semua
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
             </a>
         </div>
         
         <!-- Products Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-{{ $columns }} gap-8">
+        <div class="grid grid-cols-2 lg:grid-cols-{{ $columns }} gap-6 md:gap-8">
             @forelse($products as $product)
-                @include('components.sections.product-card', ['product' => $product])
+                <x-sections.product-card :product="$product" />
             @empty
                 <div class="col-span-full text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
                     <!-- Shopping Cart Icon -->
