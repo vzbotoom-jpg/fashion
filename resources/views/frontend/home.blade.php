@@ -39,5 +39,5 @@
     <x-sections.social-proof count="500" icon="🌟" />
 
     <!-- Newsletter -->
-    @include('components.sections.newsletter')
+    <x-sections.newsletter />
 @endsection
