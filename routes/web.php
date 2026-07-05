@@ -7,6 +7,7 @@ use App\Http\Controllers\Frontend\CollectionController;
 use App\Http\Controllers\Frontend\GalleryController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\AboutController;
+use App\Http\Controllers\Auth\SocialLoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +49,26 @@ Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::prefix('contact')->name('contact.')->group(function () {
     Route::get('/', [ContactController::class, 'index'])->name('index');
     Route::post('/', [ContactController::class, 'store'])->name('store');
+});
+
+// ============================================================
+// SOCIAL LOGIN ROUTES
+// ============================================================
+Route::prefix('login')->name('login.')->group(function () {
+    Route::get('/google', [SocialLoginController::class, 'redirectToGoogle'])->name('google');
+    Route::get('/google/callback', [SocialLoginController::class, 'handleGoogleCallback'])->name('google.callback');
+    Route::get('/github', [SocialLoginController::class, 'redirectToGithub'])->name('github');
+    Route::get('/github/callback', [SocialLoginController::class, 'handleGithubCallback'])->name('github.callback');
+});
+
+// ============================================================
+// SOCIAL REGISTER ROUTES (Tambahan)
+// ============================================================
+Route::prefix('register')->name('register.')->group(function () {
+    Route::get('/google', [SocialLoginController::class, 'redirectToGoogleRegister'])->name('google');
+    Route::get('/google/callback', [SocialLoginController::class, 'handleGoogleRegisterCallback'])->name('google.callback');
+    Route::get('/github', [SocialLoginController::class, 'redirectToGithubRegister'])->name('github');
+    Route::get('/github/callback', [SocialLoginController::class, 'handleGithubRegisterCallback'])->name('github.callback');
 });
 
 // Privacy Policy & Terms
