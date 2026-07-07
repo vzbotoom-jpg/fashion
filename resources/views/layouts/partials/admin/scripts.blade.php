@@ -1,6 +1,9 @@
 <!-- Admin Scripts -->
+<!-- Alpine.js CDN (harus di-load sebelum alpine:init) -->
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
+
+<!-- Alpine.js initialization -->
 <script>
-    // Alpine.js initialization
     document.addEventListener('alpine:init', () => {
         // Global Alpine store for admin
         Alpine.store('admin', {

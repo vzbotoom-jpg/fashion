@@ -27,17 +27,36 @@
             </select>
         </div>
         <div class="flex items-end">
-            <button type="submit" class="btn-primary px-6 py-2 rounded-lg w-full">
-                📊 Tampilkan Laporan
+            <button type="submit" class="btn-primary px-6 py-2 rounded-lg w-full flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Tampilkan Laporan
             </button>
         </div>
     </form>
 </div>
 
-<!-- Sales Chart -->
-<div class="bg-white rounded-xl shadow-sm p-6 mb-6">
-    <h3 class="font-semibold text-gray-800 mb-4">📈 Grafik Penjualan Harian</h3>
-    <canvas id="salesChart" height="200"></canvas>
+<!-- Charts: Revenue & Quantity -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+            </svg>
+            Grafik Pendapatan
+        </h3>
+        <canvas id="salesChart" height="200"></canvas>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+            </svg>
+            Grafik Jumlah Terjual
+        </h3>
+        <canvas id="quantityChart" height="200"></canvas>
+    </div>
 </div>
 
 <!-- Summary -->
@@ -59,7 +78,12 @@
 <!-- Top Products -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <div class="bg-white rounded-xl shadow-sm p-6">
-        <h3 class="font-semibold text-gray-800 mb-4">🏆 Produk Terlaris</h3>
+        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+            </svg>
+            Produk Terlaris
+        </h3>
         <div class="space-y-3">
             @forelse($topProducts ?? [] as $product)
                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -76,7 +100,13 @@
     </div>
 
     <div class="bg-white rounded-xl shadow-sm p-6">
-        <h3 class="font-semibold text-gray-800 mb-4">📊 Penjualan per Kategori</h3>
+        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
+            </svg>
+            Penjualan per Kategori
+        </h3>
         <div class="space-y-3">
             @forelse($salesByCategory ?? [] as $category)
                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -97,6 +127,31 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Format untuk jumlah barang (tanpa Rp)
+        function formatQuantity(value) {
+            if (value >= 1000000) {
+                return (value / 1000000).toFixed(1) + ' JT';
+            } else if (value >= 1000) {
+                return (value / 1000).toFixed(0) + ' RB';
+            } else {
+                return value.toFixed(0);
+            }
+        }
+
+        // Format untuk uang/pendapatan (dengan Rp)
+        function formatCurrency(value) {
+            if (value >= 1000000000) {
+                return 'Rp ' + (value / 1000000000).toFixed(1) + ' M';
+            } else if (value >= 1000000) {
+                return 'Rp ' + (value / 1000000).toFixed(1) + ' JT';
+            } else if (value >= 1000) {
+                return 'Rp ' + (value / 1000).toFixed(0) + ' RB';
+            } else {
+                return 'Rp ' + value.toFixed(0);
+            }
+        }
+
+        // 1. Sales Chart (Pendapatan)
         const ctx = document.getElementById('salesChart').getContext('2d');
         const dailyData = @json($salesData['daily'] ?? []);
 
@@ -105,7 +160,7 @@
             data: {
                 labels: Object.keys(dailyData),
                 datasets: [{
-                    label: 'Revenue',
+                    label: 'Pendapatan',
                     data: Object.values(dailyData).map(d => d.total),
                     backgroundColor: 'rgba(92, 106, 196, 0.6)',
                     borderColor: '#5c6ac4',
@@ -115,14 +170,63 @@
             options: {
                 responsive: true,
                 plugins: {
-                    legend: { display: false }
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Pendapatan: ' + formatCurrency(context.parsed.y);
+                            }
+                        }
+                    }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
                         ticks: {
                             callback: function(value) {
-                                return 'Rp ' + value.toLocaleString('id-ID');
+                                return formatCurrency(value);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 2. Quantity Chart (Jumlah Barang Terjual)
+        const quantityCtx = document.getElementById('quantityChart').getContext('2d');
+        const quantityData = @json($salesData['quantity_sold'] ?? []);
+
+        new Chart(quantityCtx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(quantityData),
+                datasets: [{
+                    label: 'Jumlah Terjual',
+                    data: Object.values(quantityData).map(d => d.total),
+                    backgroundColor: 'rgba(0, 128, 96, 0.6)',
+                    borderColor: '#008060',
+                    borderWidth: 2,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Jumlah: ' + formatQuantity(context.parsed.y);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return formatQuantity(value);
                             }
                         }
                     }

@@ -11,6 +11,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- Alpine.js x-cloak CSS -->
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+    
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/css/admin.css', 'resources/js/admin.js'])
     @stack('styles')

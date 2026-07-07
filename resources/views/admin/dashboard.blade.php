@@ -86,19 +86,31 @@
     </div>
 </div>
 
-<!-- Charts & Recent Activity -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Sales Chart -->
-    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <div class="flex items-center justify-between mb-6">
-            <h3 class="font-bold text-gray-900">Grafik Penjualan</h3>
+<!-- Charts: Revenue & Quantity -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-gray-900">Grafik Penjualan (Rp)</h3>
             <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">30 Hari Terakhir</span>
         </div>
-        <canvas id="salesChart" height="280"></canvas>
+        <div class="chart-container" style="position: relative; height:250px; width:100%;">
+            <canvas id="salesChart"></canvas>
+        </div>
     </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-gray-900">Jumlah Barang Terjual</h3>
+            <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">30 Hari Terakhir</span>
+        </div>
+        <div class="chart-container" style="position: relative; height:250px; width:100%;">
+            <canvas id="quantityChart"></canvas>
+        </div>
+    </div>
+</div>
 
-    <!-- Recent Orders -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+<!-- Recent Orders -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
         <div class="p-6 border-b border-gray-50">
             <h3 class="font-bold text-gray-900">Pesanan Terbaru</h3>
         </div>
@@ -137,32 +149,31 @@
             </a>
         </div>
     </div>
-</div>
 
-<!-- Top Products -->
-<div class="mt-8 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-    <div class="flex items-center justify-between mb-6">
-        <h3 class="font-bold text-gray-900">Produk Terlaris</h3>
-        <a href="{{ route('admin.reports.sales') }}" class="text-xs font-bold text-primary hover:underline">Detail Laporan</a>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-        @forelse($topProducts ?? [] as $product)
-            <div class="p-4 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:shadow-md transition-all duration-300">
-                <div class="flex flex-col items-center text-center">
-                    <div class="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center mb-3">
-                        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                        </svg>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 class="font-bold text-gray-900 mb-4">Produk Terlaris</h3>
+        <div class="space-y-4">
+            @forelse($topProducts ?? [] as $product)
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                            <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-800">{{ $product->name }}</p>
+                            <p class="text-xs text-gray-500">{{ number_format($product->total_sold ?? 0, 0, ',', '.') }} terjual</p>
+                        </div>
                     </div>
-                    <p class="text-sm font-bold text-gray-900 line-clamp-1 mb-1">{{ $product->name }}</p>
-                    <p class="text-xs font-bold text-primary">{{ number_format($product->total_sold ?? 0, 0, ',', '.') }} Terjual</p>
                 </div>
-            </div>
-        @empty
-            <div class="col-span-full text-center py-8">
-                <p class="text-sm text-gray-400 font-medium">Belum ada data penjualan produk</p>
-            </div>
-        @endforelse
+            @empty
+                <p class="text-center text-gray-400 py-8 text-sm">Belum ada data penjualan</p>
+            @endforelse
+        </div>
+        <div class="mt-4 pt-4 border-t border-gray-100 text-center">
+            <a href="{{ route('admin.reports.sales') }}" class="text-xs font-bold text-primary hover:underline">Lihat Detail Laporan</a>
+        </div>
     </div>
 </div>
 
@@ -170,79 +181,170 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('salesChart').getContext('2d');
-        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-        gradient.addColorStop(0, 'rgba(0, 128, 96, 0.2)');
-        gradient.addColorStop(1, 'rgba(0, 128, 96, 0)');
+        // Format untuk jumlah barang (tanpa Rp)
+        function formatQuantity(value) {
+            if (value >= 1000000) {
+                return (value / 1000000).toFixed(1) + ' JT';
+            } else if (value >= 1000) {
+                return (value / 1000).toFixed(0) + ' RB';
+            } else {
+                return value.toFixed(0);
+            }
+        }
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: @json($salesData['labels'] ?? []),
-                datasets: [{
-                    label: 'Revenue',
-                    data: @json($salesData['revenue'] ?? []),
-                    borderColor: '#008060',
-                    borderWidth: 3,
-                    pointBackgroundColor: '#ffffff',
-                    pointBorderColor: '#008060',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                    backgroundColor: gradient,
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: '#1a1a1a',
-                        titleFont: { size: 12, weight: 'bold' },
-                        bodyFont: { size: 12 },
-                        padding: 12,
-                        cornerRadius: 8,
-                        displayColors: false,
-                        callbacks: {
-                            label: function(context) {
-                                return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
-                            }
-                        }
-                    }
+        // Format untuk uang/pendapatan (dengan Rp)
+        function formatCurrency(value) {
+            if (value >= 1000000000) {
+                return 'Rp ' + (value / 1000000000).toFixed(1) + ' M';
+            } else if (value >= 1000000) {
+                return 'Rp ' + (value / 1000000).toFixed(1) + ' JT';
+            } else if (value >= 1000) {
+                return 'Rp ' + (value / 1000).toFixed(0) + ' RB';
+            } else {
+                return 'Rp ' + value.toFixed(0);
+            }
+        }
+
+        const salesData = @json($salesData ?? []);
+        const labels = salesData.labels ?? [];
+        const revenueData = salesData.revenue ?? [];
+        const quantityData = salesData.quantity ?? [];
+
+        // 1. Sales Chart (Pendapatan)
+        const ctx = document.getElementById('salesChart');
+        if (ctx) {
+            const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 250);
+            gradient.addColorStop(0, 'rgba(0, 128, 96, 0.2)');
+            gradient.addColorStop(1, 'rgba(0, 128, 96, 0)');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Pendapatan',
+                        data: revenueData,
+                        borderColor: '#008060',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#008060',
+                        pointBorderWidth: 2,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.4
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: '#f3f4f6'
-                        },
-                        ticks: {
-                            font: { size: 10 },
-                            color: '#9ca3af',
-                            callback: function(value) {
-                                if (value >= 1000000) return 'Rp ' + (value/1000000) + 'jt';
-                                if (value >= 1000) return 'Rp ' + (value/1000) + 'rb';
-                                return 'Rp ' + value;
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1a1a1a',
+                            titleFont: { size: 11, weight: 'bold' },
+                            bodyFont: { size: 11 },
+                            padding: 10,
+                            cornerRadius: 6,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Pendapatan: ' + formatCurrency(context.parsed.y);
+                                }
                             }
                         }
                     },
-                    x: {
-                        grid: {
-                            display: false
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f3f4f6' },
+                            ticks: {
+                                font: { size: 9 },
+                                color: '#9ca3af',
+                                maxTicksLimit: 8,
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
                         },
-                        ticks: {
-                            font: { size: 10 },
-                            color: '#9ca3af'
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { size: 9 },
+                                color: '#9ca3af',
+                                maxTicksLimit: 12,
+                                maxRotation: 45,
+                                minRotation: 0
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
+
+        // 2. Quantity Chart (Jumlah Barang Terjual)
+        const quantityCtx = document.getElementById('quantityChart');
+        if (quantityCtx) {
+            new Chart(quantityCtx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Jumlah Terjual',
+                        data: quantityData,
+                        backgroundColor: 'rgba(0, 128, 96, 0.6)',
+                        borderColor: '#008060',
+                        borderWidth: 2,
+                        borderRadius: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1a1a1a',
+                            titleFont: { size: 11, weight: 'bold' },
+                            bodyFont: { size: 11 },
+                            padding: 10,
+                            cornerRadius: 6,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Jumlah: ' + formatQuantity(context.parsed.y);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f3f4f6' },
+                            ticks: {
+                                font: { size: 9 },
+                                color: '#9ca3af',
+                                maxTicksLimit: 8,
+                                callback: function(value) {
+                                    return formatQuantity(value);
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { size: 9 },
+                                color: '#9ca3af',
+                                maxTicksLimit: 12,
+                                maxRotation: 45,
+                                minRotation: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
     });
 </script>
 @endpush

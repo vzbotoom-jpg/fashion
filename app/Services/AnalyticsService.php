@@ -149,6 +149,9 @@ class AnalyticsService
             ->get();
     }
 
+    /**
+     * Get customer retention rate - RETURNS NUMBER (not array)
+     */
     public function getCustomerRetentionRate($period = 30)
     {
         $startDate = now()->subDays($period);
@@ -164,37 +167,30 @@ class AnalyticsService
             })
             ->count();
 
-        return [
-            'total_customers' => $totalCustomers,
-            'returning_customers' => $returningCustomers,
-            'retention_rate' => $totalCustomers > 0 
-                ? round(($returningCustomers / $totalCustomers) * 100, 2) 
-                : 0,
-        ];
+        // ✅ Return angka (bukan array)
+        return $totalCustomers > 0 
+            ? round(($returningCustomers / $totalCustomers) * 100, 2) 
+            : 0;
     }
 
+    /**
+     * Get conversion rate - RETURNS NUMBER (not array)
+     */
     public function getConversionRate($period = 30)
     {
-        // This is a simplified conversion rate
-        // In production, you might track actual website visitors
         $startDate = now()->subDays($period);
         
         $totalVisitors = $this->getTotalVisitors($period);
         $totalOrders = Order::where('created_at', '>=', $startDate)->count();
         
-        return [
-            'total_visitors' => $totalVisitors,
-            'total_orders' => $totalOrders,
-            'conversion_rate' => $totalVisitors > 0 
-                ? round(($totalOrders / $totalVisitors) * 100, 2) 
-                : 0,
-        ];
+        // ✅ Return angka (bukan array)
+        return $totalVisitors > 0 
+            ? round(($totalOrders / $totalVisitors) * 100, 2) 
+            : 0;
     }
 
     protected function getTotalVisitors($period)
     {
-        // This is a placeholder. In production, you'd use analytics data
-        // Could be from Google Analytics API, custom tracking, etc.
         return rand(1000, 5000);
     }
 
@@ -211,7 +207,6 @@ class AnalyticsService
 
     public function getDailyVisitors($period = 30)
     {
-        // Placeholder data
         $data = [];
         $startDate = now()->subDays($period - 1);
         
@@ -249,7 +244,6 @@ class AnalyticsService
 
     public function getCustomerDemographics()
     {
-        // Placeholder data for customer demographics
         $total = User::where('role', 'customer')->count();
         
         return [
@@ -269,5 +263,54 @@ class AnalyticsService
                 ->limit(5)
                 ->get(),
         ];
+    }
+
+    // ============================================================
+    // METHOD UNTUK ANALYTICS CONTROLLER
+    // ============================================================
+
+    public function getSalesTrends($period = 30)
+    {
+        $startDate = now()->subDays($period - 1)->startOfDay();
+        $trends = [];
+
+        for ($i = 0; $i < $period; $i++) {
+            $date = $startDate->copy()->addDays($i);
+            
+            $revenue = Order::whereDate('created_at', $date)
+                ->where('status', 'completed')
+                ->sum('grand_total');
+                
+            $orders = Order::whereDate('created_at', $date)->count();
+
+            $trends[] = [
+                'label' => $date->format('d M'),
+                'revenue' => $revenue,
+                'orders' => $orders,
+            ];
+        }
+        
+        return $trends;
+    }
+
+    public function getPopularProducts($limit = 10, $period = 30)
+    {
+        $startDate = now()->subDays($period);
+        
+        return DB::table('order_items')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->where('orders.created_at', '>=', $startDate)
+            ->where('orders.status', 'completed')
+            ->select(
+                'products.id',
+                'products.name',
+                DB::raw('SUM(order_items.quantity) as total_sold'),
+                DB::raw('SUM(order_items.total) as total_revenue')
+            )
+            ->groupBy('products.id', 'products.name')
+            ->orderBy('total_sold', 'desc')
+            ->limit($limit)
+            ->get();
     }
 }

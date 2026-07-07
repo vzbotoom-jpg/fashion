@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\OrderReportController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\StockManagementController;
 use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\SearchController;
+use App\Http\Controllers\Admin\ChartController;
 
 // Super Admin Controllers
 use App\Http\Controllers\Admin\SuperAdmin\UserManagementController;
@@ -33,6 +35,11 @@ Route::middleware(['auth', 'role:admin,super_admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
+
+        // ============================================================
+        // SEARCH (Tambahan)
+        // ============================================================
+        Route::get('/search', [SearchController::class, 'index'])->name('search');
 
         // ============================================================
         // DASHBOARD
@@ -140,6 +147,12 @@ Route::middleware(['auth', 'role:admin,super_admin'])
         Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
 
         // ============================================================
+        // ✅ CHARTS (Full Page Chart - Tambahan)
+        // ============================================================
+        Route::get('/charts', [ChartController::class, 'index'])->name('charts');
+        Route::get('/charts/data', [ChartController::class, 'data'])->name('charts.data');
+
+        // ============================================================
         // SUPER ADMIN ROUTES (Exclusive)
         // ============================================================
         Route::middleware(['role:super_admin'])
@@ -158,12 +171,15 @@ Route::middleware(['auth', 'role:admin,super_admin'])
                     Route::get('/{id}/toggle', [UserManagementController::class, 'toggleActive'])->name('toggle');
                 });
 
-                // Settings
+                // ✅ Settings
                 Route::prefix('settings')->name('settings.')->group(function () {
                     Route::get('/', [SettingController::class, 'index'])->name('index');
-                    Route::put('/general', [SettingController::class, 'updateGeneral'])->name('general');
-                    Route::put('/payment', [SettingController::class, 'updatePayment'])->name('payment');
-                    Route::put('/shipping', [SettingController::class, 'updateShipping'])->name('shipping');
+                    Route::get('/general', [SettingController::class, 'general'])->name('general');
+                    Route::put('/general', [SettingController::class, 'updateGeneral'])->name('general.update');
+                    Route::get('/payment', [SettingController::class, 'payment'])->name('payment');
+                    Route::put('/payment', [SettingController::class, 'updatePayment'])->name('payment.update');
+                    Route::get('/shipping', [SettingController::class, 'shipping'])->name('shipping');
+                    Route::put('/shipping', [SettingController::class, 'updateShipping'])->name('shipping.update');
                 });
             });
     });

@@ -12,26 +12,31 @@
 
         <!-- Payment Methods -->
         <div>
-            <h3 class="font-semibold text-gray-800 mb-4">💳 Metode Pembayaran</h3>
+            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+                Metode Pembayaran
+            </h3>
             <div class="space-y-3">
                 @php
                     $paymentMethods = old('payment_methods', isset($settings['payment_methods']) ? explode(',', $settings['payment_methods']) : []);
                 @endphp
                 <x-form.checkbox 
                     name="payment_methods[]" 
-                    label="🏦 Transfer Bank" 
+                    label="Transfer Bank" 
                     value="bank_transfer"
                     checked="{{ in_array('bank_transfer', $paymentMethods) }}"
                 />
                 <x-form.checkbox 
                     name="payment_methods[]" 
-                    label="💳 Kartu Kredit" 
+                    label="Kartu Kredit" 
                     value="credit_card"
                     checked="{{ in_array('credit_card', $paymentMethods) }}"
                 />
                 <x-form.checkbox 
                     name="payment_methods[]" 
-                    label="📱 E-Wallet" 
+                    label="E-Wallet" 
                     value="e_wallet"
                     checked="{{ in_array('e_wallet', $paymentMethods) }}"
                 />
@@ -40,7 +45,12 @@
 
         <!-- Bank Transfer Details -->
         <div class="border-t border-gray-200 pt-6">
-            <h3 class="font-semibold text-gray-800 mb-4">🏦 Detail Transfer Bank</h3>
+            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+                Detail Transfer Bank
+            </h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <x-form.input 
                     name="bank_transfer_account" 
@@ -62,7 +72,12 @@
 
         <!-- Midtrans Configuration -->
         <div class="border-t border-gray-200 pt-6">
-            <h3 class="font-semibold text-gray-800 mb-4">🔐 Midtrans (Opsional)</h3>
+            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                Midtrans (Opsional)
+            </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <x-form.input 
                     name="midtrans_server_key" 
@@ -86,11 +101,17 @@
 
         <!-- Submit -->
         <div class="flex gap-3">
-            <button type="submit" class="btn-primary px-8 py-3 rounded-lg">
-                💾 Simpan Pengaturan
+            <button type="submit" class="btn-primary px-8 py-3 rounded-lg flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+                </svg>
+                Simpan Pengaturan
             </button>
-            <a href="{{ route('admin.super.settings.index') }}" class="btn-secondary px-8 py-3 rounded-lg">
-                ← Kembali
+            <a href="{{ route('admin.super.settings.index') }}" class="btn-secondary px-8 py-3 rounded-lg flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Kembali
             </a>
         </div>
     </form>

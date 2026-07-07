@@ -96,7 +96,12 @@
 
         <!-- Sizes & Stock -->
         <div>
-            <h3 class="font-semibold text-gray-800 mb-4">📏 Ukuran & Stok</h3>
+            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                </svg>
+                Ukuran & Stok
+            </h3>
             <div id="sizes-container">
                 @foreach($sizes ?? [] as $index => $size)
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-3 p-4 bg-gray-50 rounded-lg">
@@ -134,11 +139,21 @@
 
         <!-- Images -->
         <div>
-            <h3 class="font-semibold text-gray-800 mb-4">🖼️ Gambar Produk</h3>
+            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                Gambar Produk
+            </h3>
             <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary transition">
                 <input type="file" name="images[]" accept="image/*" multiple 
                        class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark">
-                <p class="text-xs text-gray-400 mt-2">Format: JPG, PNG, JPEG (Max 5MB per gambar)</p>
+                <p class="text-xs text-gray-400 mt-2 flex items-center justify-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    Format: JPG, PNG, JPEG (Max 5MB per gambar)
+                </p>
             </div>
         </div>
 
@@ -153,11 +168,17 @@
 
         <!-- Submit -->
         <div class="flex gap-3">
-            <button type="submit" class="btn-primary px-8 py-3 rounded-lg">
-                💾 Simpan Produk
+            <button type="submit" class="btn-primary px-8 py-3 rounded-lg flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+                </svg>
+                Simpan Produk
             </button>
-            <a href="{{ route('admin.products.index') }}" class="btn-secondary px-8 py-3 rounded-lg">
-                ← Kembali
+            <a href="{{ route('admin.products.index') }}" class="btn-secondary px-8 py-3 rounded-lg flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Kembali
             </a>
         </div>
     </form>
