@@ -19,7 +19,7 @@
                         @csrf
 
                         <!-- Shipping Address -->
-                        <div class="bg-gray-50/50 p-8 rounded-2xl border border-gray-100">
+                        <div class="bg-gray-50/50 p-5 md:p-8 rounded-2xl border border-gray-100">
                             <h3 class="text-xl font-bold text-gray-900 mb-8 flex items-center gap-3">
                                 <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -59,7 +59,7 @@
                         <hr class="border-gray-100">
 
                         <!-- Payment Method -->
-                        <div class="bg-gray-50/50 p-8 rounded-2xl border border-gray-100">
+                        <div class="bg-gray-50/50 p-5 md:p-8 rounded-2xl border border-gray-100">
                             <h3 class="text-xl font-bold text-gray-900 mb-8 flex items-center gap-3">
                                 <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
@@ -69,23 +69,23 @@
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                                 <label class="relative block cursor-pointer group">
                                     <input type="radio" name="payment_method" value="bank_transfer" class="peer sr-only" checked>
-                                    <div class="p-5 border border-gray-200 rounded-2xl hover:bg-gray-50 peer-checked:border-primary peer-checked:bg-primary/5 transition-all text-center">
-                                        <span class="text-3xl mb-3 block">🏦</span>
-                                        <span class="font-bold text-gray-900 text-sm">Transfer Bank</span>
+                                    <div class="p-4 md:p-5 border border-gray-200 rounded-2xl hover:bg-gray-50 peer-checked:border-primary peer-checked:bg-primary/5 transition-all text-center">
+                                        <span class="text-2xl md:text-3xl mb-2 md:mb-3 block">🏦</span>
+                                        <span class="font-bold text-gray-900 text-xs md:text-sm">Transfer Bank</span>
                                     </div>
                                 </label>
                                 <label class="relative block cursor-pointer group">
                                     <input type="radio" name="payment_method" value="credit_card" class="peer sr-only">
-                                    <div class="p-5 border border-gray-200 rounded-2xl hover:bg-gray-50 peer-checked:border-primary peer-checked:bg-primary/5 transition-all text-center">
-                                        <span class="text-3xl mb-3 block">💳</span>
-                                        <span class="font-bold text-gray-900 text-sm">Kartu Kredit</span>
+                                    <div class="p-4 md:p-5 border border-gray-200 rounded-2xl hover:bg-gray-50 peer-checked:border-primary peer-checked:bg-primary/5 transition-all text-center">
+                                        <span class="text-2xl md:text-3xl mb-2 md:mb-3 block">💳</span>
+                                        <span class="font-bold text-gray-900 text-xs md:text-sm">Kartu Kredit</span>
                                     </div>
                                 </label>
                                 <label class="relative block cursor-pointer group">
                                     <input type="radio" name="payment_method" value="e_wallet" class="peer sr-only">
-                                    <div class="p-5 border border-gray-200 rounded-2xl hover:bg-gray-50 peer-checked:border-primary peer-checked:bg-primary/5 transition-all text-center">
-                                        <span class="text-3xl mb-3 block">📱</span>
-                                        <span class="font-bold text-gray-900 text-sm">E-Wallet</span>
+                                    <div class="p-4 md:p-5 border border-gray-200 rounded-2xl hover:bg-gray-50 peer-checked:border-primary peer-checked:bg-primary/5 transition-all text-center">
+                                        <span class="text-2xl md:text-3xl mb-2 md:mb-3 block">📱</span>
+                                        <span class="font-bold text-gray-900 text-xs md:text-sm">E-Wallet</span>
                                     </div>
                                 </label>
                             </div>

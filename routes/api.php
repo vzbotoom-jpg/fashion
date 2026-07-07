@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\ProductController;
+use App\Services\CartService;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,9 +57,9 @@ Route::post('/shipping/calculate', function (Request $request) {
 
 // Cart API
 Route::prefix('cart')->name('api.cart.')->group(function () {
-    Route::get('/count', function () {
+    Route::get('/count', function (CartService $cartService) {
         $count = auth()->check() ? 
-            \App\Services\CartService::getCartCount(auth()->id()) : 0;
+            $cartService->getCartCount(auth()->id()) : 0;
         return response()->json(['count' => $count]);
     })->name('count');
 });
@@ -74,8 +75,8 @@ Route::middleware('auth:sanctum')->group(function () {
     })->name('api.user');
 
     Route::prefix('cart')->name('api.cart.')->group(function () {
-        Route::get('/items', function () {
-            $cart = \App\Services\CartService::getCart(auth()->id());
+        Route::get('/items', function (CartService $cartService) {
+            $cart = $cartService->getCart(auth()->id());
             return response()->json([
                 'items' => $cart->items->load(['product', 'size']),
                 'total' => $cart->total,

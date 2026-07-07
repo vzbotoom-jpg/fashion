@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class CartService
 {
-    public static function getCart($userId)
+    public function getCart($userId)
     {
         $cart = Cart::firstOrCreate(
             ['user_id' => $userId],
@@ -56,7 +56,7 @@ class CartService
             ]);
         }
 
-        self::updateCartTotals($cart);
+        $this->updateCartTotals($cart);
 
         return $cartItem->load(['product', 'size']);
     }
@@ -69,7 +69,7 @@ class CartService
             ->firstOrFail();
 
         $cartItem->delete();
-        self::updateCartTotals($cart);
+        $this->updateCartTotals($cart);
 
         return true;
     }
@@ -95,7 +95,7 @@ class CartService
         }
 
         $cartItem->update(['quantity' => $quantity]);
-        self::updateCartTotals($cart);
+        $this->updateCartTotals($cart);
 
         return $cartItem->load(['product', 'size']);
     }
@@ -105,12 +105,12 @@ class CartService
         $cart = Cart::where('user_id', $userId)->first();
         if ($cart) {
             $cart->items()->delete();
-            self::updateCartTotals($cart);
+            $this->updateCartTotals($cart);
         }
         return true;
     }
 
-    public static function calculateTotal($userId)
+    public function calculateTotal($userId)
     {
         $cart = Cart::where('user_id', $userId)->first();
         if (!$cart) {
@@ -122,7 +122,7 @@ class CartService
         });
     }
 
-    public static function getCartCount($userId)
+    public function getCartCount($userId)
     {
         $cart = Cart::where('user_id', $userId)->first();
         if (!$cart) {
@@ -132,7 +132,7 @@ class CartService
         return $cart->items->sum('quantity');
     }
 
-    protected static function updateCartTotals($cart)
+    protected function updateCartTotals($cart)
     {
         $total = $cart->items->sum(function ($item) {
             return $item->price * $item->quantity;

@@ -7,6 +7,7 @@ use App\Http\Controllers\Frontend\CollectionController;
 use App\Http\Controllers\Frontend\GalleryController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\AboutController;
+use App\Services\CartService;
 use App\Http\Controllers\Auth\SocialLoginController;
 
 /*

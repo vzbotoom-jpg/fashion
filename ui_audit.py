@@ -15,11 +15,11 @@ async def run_audit():
             "mobile": {"width": 375, "height": 667}
         }
 
-        # Pages to audit (corrected URLs)
+        # Pages to audit (corrected URLs based on route:list)
         pages = {
             "home": "http://127.0.0.1:8000/",
             "products": "http://127.0.0.1:8000/products",
-            "product_detail": "http://127.0.0.1:8000/products/kaos-polos-premium",
+            "product_detail": "http://127.0.0.1:8000/products/celana-jeans-slim",
             "cart": "http://127.0.0.1:8000/customer/cart",
             "checkout": "http://127.0.0.1:8000/customer/checkout",
             "about": "http://127.0.0.1:8000/about",
@@ -38,18 +38,19 @@ async def run_audit():
         # Add item to cart to ensure Cart/Checkout aren't empty
         print("Adding item to cart for audit...")
         await page.goto(pages["product_detail"])
-        # Wait for product detail page to load and select size if needed
-        # Assuming there's a size selection, we'll try to click the first available
         try:
-            # Select size (assuming radio buttons or buttons with size names)
-            await page.click("input[name='size_id']", position={'x': 0, 'y': 0})
-            # Or if it's a button
-            # await page.click("button:has-text('M')")
-        except:
-            pass
+            # Wait for any size buttons and click the first one if present
+            size_btn = await page.query_selector("button.size-option, .size-selector button, input[name='size_id'] + label")
+            if size_btn:
+                await size_btn.click()
 
-        await page.click("button:has-text('Tambah ke Keranjang')")
-        await asyncio.sleep(2) # Wait for AJAX/Notification
+            # Click add to cart
+            add_to_cart_btn = await page.query_selector("button:has-text('Tambah ke Keranjang'), button:has-text('Add to Cart')")
+            if add_to_cart_btn:
+                await add_to_cart_btn.click()
+                await asyncio.sleep(2) # Wait for AJAX
+        except Exception as e:
+            print(f"Warning during add to cart: {e}")
 
         for vp_name, vp_size in viewports.items():
             print(f"Auditing {vp_name}...")

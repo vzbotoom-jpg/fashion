@@ -64,7 +64,7 @@
                             <div class="space-y-3 text-xs text-gray-600">
                                 <p class="flex justify-between"><span>Senin - Jumat</span> <span class="font-bold text-gray-900">09:00 - 18:00 WIB</span></p>
                                 <p class="flex justify-between"><span>Sabtu</span> <span class="font-bold text-gray-900">10:00 - 15:00 WIB</span></p>
-                                <p class="flex justify-between"><span>Minggu / Libur</span> <span class="font-bold text-red-500">Tutup</span></p>
+                                <p class="flex justify-between"><span>Minggu / Libur</span> <span class="font-bold text-danger">Tutup</span></p>
                             </div>
                         </div>
                     </div>
@@ -78,25 +78,25 @@
                             @csrf
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div>
-                                    <label class="form-label">Nama Lengkap <span class="text-red-500">*</span></label>
+                                    <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
                                     <input type="text" name="name" value="{{ old('name') }}" required
                                            class="form-input" placeholder="Masukkan nama Anda">
                                 </div>
                                 <div>
-                                    <label class="form-label">Alamat Email <span class="text-red-500">*</span></label>
+                                    <label class="form-label">Alamat Email <span class="text-danger">*</span></label>
                                     <input type="email" name="email" value="{{ old('email') }}" required
                                            class="form-input" placeholder="email@contoh.com">
                                 </div>
                             </div>
 
                             <div>
-                                <label class="form-label">Subjek Pesan <span class="text-red-500">*</span></label>
+                                <label class="form-label">Subjek Pesan <span class="text-danger">*</span></label>
                                 <input type="text" name="subject" value="{{ old('subject') }}" required
                                        class="form-input" placeholder="Apa yang ingin Anda tanyakan?">
                             </div>
 
                             <div>
-                                <label class="form-label">Pesan Anda <span class="text-red-500">*</span></label>
+                                <label class="form-label">Pesan Anda <span class="text-danger">*</span></label>
                                 <textarea name="message" rows="6" required
                                           class="form-input" placeholder="Tuliskan detail pertanyaan, masukan, atau kendala Anda di sini..."></textarea>
                             </div>
