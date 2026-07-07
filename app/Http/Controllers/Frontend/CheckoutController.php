@@ -11,8 +11,10 @@ use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class CheckoutController extends Controller
+class CheckoutController extends Controller implements HasMiddleware
 {
     protected $cartService;
     protected $checkoutService;
@@ -29,6 +31,14 @@ class CheckoutController extends Controller
         $this->checkoutService = $checkoutService;
         $this->paymentService = $paymentService;
         $this->notificationService = $notificationService;
+    }
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth'),
+            new Middleware('role:customer'),
+        ];
     }
 
     public function index()

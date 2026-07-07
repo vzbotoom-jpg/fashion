@@ -11,28 +11,35 @@ use App\Models\User;
 use App\Services\AnalyticsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class DashboardController extends Controller
+class DashboardController extends Controller implements HasMiddleware
 {
     protected $analyticsService;
 
     public function __construct(AnalyticsService $analyticsService)
     {
         $this->analyticsService = $analyticsService;
-        $this->middleware(['auth', 'role:admin,super_admin']);
+    }
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth'),
+            new Middleware('role:admin,super_admin'),
+        ];
     }
 
     public function index()
     {
         $stats = [
             'total_orders' => Order::count(),
-            'total_pre_orders' => PreOrder::count(),
-            'total_custom_orders' => CustomOrder::count(),
+            'revenue_this_month' => Order::whereMonth('created_at', now()->month)->where('status', '!=', 'cancelled')->sum('grand_total'),
+            'pending_pre_orders' => PreOrder::where('status', 'pending')->count(),
             'total_products' => Product::count(),
             'total_users' => User::where('role', 'customer')->count(),
-            'pending_orders' => Order::where('status', 'pending')->count(),
-            'revenue_today' => Order::whereDate('created_at', today())->sum('total'),
-            'revenue_this_month' => Order::whereMonth('created_at', now()->month)->sum('total'),
+            'completed_orders' => Order::where('status', 'completed')->count(),
         ];
 
         $recentOrders = Order::with(['user', 'payment'])

@@ -17,8 +17,8 @@
     $id = $id ?? $name;
     $errorName = str_replace(['[', ']'], ['.', ''], $name);
     $hasError = $errors->has($errorName) || ($error && !empty($error));
-    $classes = 'w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition resize-y';
-    $classes .= $hasError ? ' border-red-500 ring-2 ring-red-500' : ' border-gray-300';
+    $classes = 'w-full px-4 py-2.5 border rounded-lg focus:ring-1 focus:ring-primary focus:border-primary transition resize-y';
+    $classes .= $hasError ? ' border-danger ring-1 ring-danger' : ' border-gray-300';
     $classes .= $disabled ? ' opacity-50 cursor-not-allowed bg-gray-100' : ' bg-white';
 @endphp
 
@@ -28,7 +28,7 @@
         <label for="{{ $id }}" class="block text-sm font-medium text-gray-700">
             {{ $label }}
             @if($required)
-                <span class="text-red-500">*</span>
+                <span class="text-danger">*</span>
             @endif
         </label>
     @endif
@@ -53,6 +53,6 @@
 
     <!-- Error Message -->
     @if($hasError)
-        <p class="text-xs text-red-500">{{ $errors->first($errorName) ?? $error }}</p>
+        <p class="text-xs text-danger font-medium">{{ $errors->first($errorName) ?? $error }}</p>
     @endif
 </div>

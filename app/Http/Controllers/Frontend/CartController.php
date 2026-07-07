@@ -9,14 +9,24 @@ use App\Services\CartService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class CartController extends Controller
+class CartController extends Controller implements HasMiddleware
 {
     protected $cartService;
 
     public function __construct(CartService $cartService)
     {
         $this->cartService = $cartService;
+    }
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth'),
+            new Middleware('role:customer'),
+        ];
     }
 
     public function index()
