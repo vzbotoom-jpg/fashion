@@ -68,7 +68,6 @@
                     value="{{ old('price') }}"
                     placeholder="0"
                     required
-                    icon="💰"
                 />
             </div>
 
@@ -96,44 +95,120 @@
 
         <!-- Sizes & Stock -->
         <div>
-            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                </svg>
-                Ukuran & Stok
-            </h3>
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                    </svg>
+                    Ukuran & Stok
+                </h3>
+                <button type="button" onclick="addSizeRow()" class="btn-primary !py-1.5 !px-4 !text-sm flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Tambah Ukuran
+                </button>
+            </div>
             <div id="sizes-container">
-                @foreach($sizes ?? [] as $index => $size)
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-3 p-4 bg-gray-50 rounded-lg">
-                        <div class="flex items-center">
-                            <x-form.checkbox 
-                                name="sizes[{{ $index }}][size_id]" 
-                                label="{{ $size->name }} ({{ $size->code }})"
-                                value="{{ $size->id }}"
+                @if(isset($sizes) && $sizes->isNotEmpty())
+                    @foreach($sizes as $index => $size)
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-3 p-4 bg-gray-50 rounded-lg size-row">
+                            <div>
+                                <x-form.input 
+                                    name="sizes[{{ $index }}][size_name]" 
+                                    label="Nama Ukuran" 
+                                    value="{{ $size->name }}"
+                                    placeholder="Contoh: M, L, XL"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <x-form.input 
+                                    type="number"
+                                    name="sizes[{{ $index }}][stock]" 
+                                    label="Stok" 
+                                    value="0"
+                                    placeholder="Jumlah stok"
+                                    min="0"
+                                />
+                            </div>
+                            <div>
+                                <x-form.input 
+                                    type="number"
+                                    name="sizes[{{ $index }}][min_stock]" 
+                                    label="Min Stok" 
+                                    value="5"
+                                    placeholder="Minimal stok"
+                                    min="0"
+                                />
+                            </div>
+                            <div>
+                                <x-form.input 
+                                    type="number"
+                                    name="sizes[{{ $index }}][price]" 
+                                    label="Harga (opsional)" 
+                                    placeholder="Harga khusus ukuran"
+                                    min="0"
+                                />
+                            </div>
+                            <div class="flex items-end">
+                                <button type="button" onclick="removeSizeRow(this)" class="text-red-500 hover:text-red-700 mb-1">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <!-- Default row jika tidak ada ukuran -->
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-3 p-4 bg-gray-50 rounded-lg size-row">
+                        <div>
+                            <x-form.input 
+                                name="sizes[0][size_name]" 
+                                label="Nama Ukuran" 
+                                placeholder="Contoh: M, L, XL"
+                                required
                             />
                         </div>
-                        <x-form.input 
-                            type="number"
-                            name="sizes[{{ $index }}][stock]" 
-                            label="Stok" 
-                            value="0"
-                            placeholder="Jumlah stok"
-                        />
-                        <x-form.input 
-                            type="number"
-                            name="sizes[{{ $index }}][min_stock]" 
-                            label="Min Stok" 
-                            value="5"
-                            placeholder="Minimal stok"
-                        />
-                        <x-form.input 
-                            type="number"
-                            name="sizes[{{ $index }}][price]" 
-                            label="Harga (opsional)" 
-                            placeholder="Harga khusus ukuran"
-                        />
+                        <div>
+                            <x-form.input 
+                                type="number"
+                                name="sizes[0][stock]" 
+                                label="Stok" 
+                                value="0"
+                                placeholder="Jumlah stok"
+                                min="0"
+                            />
+                        </div>
+                        <div>
+                            <x-form.input 
+                                type="number"
+                                name="sizes[0][min_stock]" 
+                                label="Min Stok" 
+                                value="5"
+                                placeholder="Minimal stok"
+                                min="0"
+                            />
+                        </div>
+                        <div>
+                            <x-form.input 
+                                type="number"
+                                name="sizes[0][price]" 
+                                label="Harga (opsional)" 
+                                placeholder="Harga khusus ukuran"
+                                min="0"
+                            />
+                        </div>
+                        <div class="flex items-end">
+                            <button type="button" onclick="removeSizeRow(this)" class="text-red-500 hover:text-red-700 mb-1">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
-                @endforeach
+                @endif
             </div>
         </div>
 
@@ -183,4 +258,50 @@
         </div>
     </form>
 </div>
+
+<script>
+    let sizeIndex = {{ isset($sizes) ? $sizes->count() : 1 }};
+
+    function addSizeRow() {
+        const container = document.getElementById('sizes-container');
+        const row = document.createElement('div');
+        row.className = 'grid grid-cols-1 md:grid-cols-5 gap-4 mb-3 p-4 bg-gray-50 rounded-lg size-row';
+        row.innerHTML = `
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Ukuran</label>
+                <input type="text" name="sizes[${sizeIndex}][size_name]" placeholder="Contoh: M, L, XL" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Stok</label>
+                <input type="number" name="sizes[${sizeIndex}][stock]" value="0" placeholder="Jumlah stok" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Min Stok</label>
+                <input type="number" name="sizes[${sizeIndex}][min_stock]" value="5" placeholder="Minimal stok" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Harga (opsional)</label>
+                <input type="number" name="sizes[${sizeIndex}][price]" placeholder="Harga khusus ukuran" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition">
+            </div>
+            <div class="flex items-end">
+                <button type="button" onclick="removeSizeRow(this)" class="text-red-500 hover:text-red-700 mb-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                </button>
+            </div>
+        `;
+        container.appendChild(row);
+        sizeIndex++;
+    }
+
+    function removeSizeRow(button) {
+        const row = button.closest('.size-row');
+        if (document.querySelectorAll('.size-row').length > 1) {
+            row.remove();
+        } else {
+            alert('Minimal harus ada 1 ukuran!');
+        }
+    }
+</script>
 @endsection

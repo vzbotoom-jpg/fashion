@@ -19,12 +19,31 @@ class StockManagementController extends Controller
         $this->middleware(['auth', 'role:admin,super_admin']);
     }
 
+    /**
+     * Display a listing of all products with stock.
+     */
+    public function index()
+    {
+        $products = Product::with(['sizes', 'category'])
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->paginate(20);
+
+        return view('admin.products.stock-index', compact('products'));
+    }
+
+    /**
+     * Show the form for editing stock of a specific product.
+     */
     public function edit($productId)
     {
         $product = Product::with(['sizes'])->findOrFail($productId);
         return view('admin.products.stock', compact('product'));
     }
 
+    /**
+     * Update stock for a specific product.
+     */
     public function update(Request $request, $productId)
     {
         $validator = Validator::make($request->all(), [
@@ -65,10 +84,13 @@ class StockManagementController extends Controller
             }
         }
 
-        return redirect()->route('admin.products.index')
+        return redirect()->route('admin.products.stock.index')
             ->with('success', 'Stok produk berhasil diperbarui!');
     }
 
+    /**
+     * Bulk update stock for multiple products.
+     */
     public function bulkUpdate(Request $request)
     {
         $validator = Validator::make($request->all(), [

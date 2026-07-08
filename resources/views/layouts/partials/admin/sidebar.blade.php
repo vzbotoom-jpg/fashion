@@ -44,6 +44,7 @@
                 <div x-show="open" x-transition.origin.top class="pl-12 mt-0.5 space-y-0.5">
                     <a href="{{ route('admin.products.index') }}" class="block py-1.5 text-xs font-medium transition-colors {{ Request::is('admin/products') ? 'text-white' : 'text-gray-500 hover:text-white' }}">Semua Produk</a>
                     <a href="{{ route('admin.products.create') }}" class="block py-1.5 text-xs font-medium transition-colors {{ Route::is('admin.products.create') ? 'text-white' : 'text-gray-500 hover:text-white' }}">Tambah Produk</a>
+                    <a href="{{ route('admin.products.stock.index') }}" class="block py-1.5 text-xs font-medium transition-colors {{ Route::is('admin.products.stock.index') ? 'text-white' : 'text-gray-500 hover:text-white' }}">Update Stok</a>
                 </div>
             </div>
 

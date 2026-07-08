@@ -37,7 +37,7 @@ Route::middleware(['auth', 'role:admin,super_admin'])
     ->group(function () {
 
         // ============================================================
-        // SEARCH (Tambahan)
+        // SEARCH
         // ============================================================
         Route::get('/search', [SearchController::class, 'index'])->name('search');
 
@@ -62,7 +62,8 @@ Route::middleware(['auth', 'role:admin,super_admin'])
             Route::put('/{id}', [ProductManagementController::class, 'update'])->name('update');
             Route::delete('/{id}', [ProductManagementController::class, 'destroy'])->name('destroy');
 
-            // Stock Management
+            // ✅ Stock Management
+            Route::get('/stock', [StockManagementController::class, 'index'])->name('stock.index');
             Route::get('/{id}/stock', [StockManagementController::class, 'edit'])->name('stock.edit');
             Route::put('/{id}/stock', [StockManagementController::class, 'update'])->name('stock.update');
             Route::post('/stock/bulk', [StockManagementController::class, 'bulkUpdate'])->name('stock.bulk');
@@ -147,7 +148,7 @@ Route::middleware(['auth', 'role:admin,super_admin'])
         Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
 
         // ============================================================
-        // ✅ CHARTS (Full Page Chart - Tambahan)
+        // CHARTS
         // ============================================================
         Route::get('/charts', [ChartController::class, 'index'])->name('charts');
         Route::get('/charts/data', [ChartController::class, 'data'])->name('charts.data');
@@ -171,7 +172,7 @@ Route::middleware(['auth', 'role:admin,super_admin'])
                     Route::get('/{id}/toggle', [UserManagementController::class, 'toggleActive'])->name('toggle');
                 });
 
-                // ✅ Settings
+                // Settings
                 Route::prefix('settings')->name('settings.')->group(function () {
                     Route::get('/', [SettingController::class, 'index'])->name('index');
                     Route::get('/general', [SettingController::class, 'general'])->name('general');

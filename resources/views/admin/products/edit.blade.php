@@ -65,7 +65,6 @@
                     label="Harga" 
                     value="{{ old('price', $product->price) }}"
                     required
-                    icon="💰"
                 />
             </div>
 
@@ -121,6 +120,7 @@
                             label="Stok" 
                             value="{{ $stock }}"
                             placeholder="Jumlah stok"
+                            min="0"
                         />
                         <x-form.input 
                             type="number"
@@ -128,6 +128,7 @@
                             label="Min Stok" 
                             value="{{ $minStock }}"
                             placeholder="Minimal stok"
+                            min="0"
                         />
                         <x-form.input 
                             type="number"
@@ -135,6 +136,7 @@
                             label="Harga (opsional)" 
                             value="{{ $sizePrice }}"
                             placeholder="Harga khusus ukuran"
+                            min="0"
                         />
                     </div>
                 @endforeach
@@ -154,10 +156,10 @@
                     @foreach($product->images as $image)
                         <div class="relative w-24 h-24 bg-gray-100 rounded-lg overflow-hidden">
                             <img src="{{ asset('storage/' . $image->image_path) }}" 
-                                 alt="Product image" 
+                                 alt="{{ $product->name }}" 
                                  class="w-full h-full object-cover">
                             <button type="button" onclick="removeImage({{ $image->id }})" 
-                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600">
+                                    class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs transition">
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                 </svg>
@@ -177,9 +179,11 @@
                 Tambah Gambar
             </h3>
             <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary transition">
-                <input type="file" name="images[]" accept="image/*" multiple 
+                <input type="file" name="new_images[]" accept="image/*" multiple 
                        class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark">
-                <p class="text-xs text-gray-400 mt-2">Format: JPG, PNG, JPEG (Max 5MB per gambar)</p>
+                <p class="text-xs text-gray-400 mt-2">
+                    Format: JPG, PNG, JPEG (Max 5MB per gambar)
+                </p>
             </div>
         </div>
 
@@ -225,8 +229,19 @@
                 if (data.success) {
                     window.location.reload();
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Gagal menghapus gambar. Silakan coba lagi.');
             });
         }
+    }
+
+    // Toggle all sizes checkbox
+    function toggleAllSizes(checked) {
+        document.querySelectorAll('input[name^="sizes"][name$="[size_id]"]').forEach(function(checkbox) {
+            checkbox.checked = checked;
+        });
     }
 </script>
 @endsection

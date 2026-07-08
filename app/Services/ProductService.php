@@ -10,6 +10,28 @@ use Illuminate\Support\Str;
 
 class ProductService
 {
+    /**
+     * Generate unique slug
+     */
+    private function generateUniqueSlug($name, $id = null)
+    {
+        $slug = Str::slug($name);
+        $originalSlug = $slug;
+        $counter = 1;
+
+        while (Product::where('slug', $slug)
+            ->when($id, function ($query) use ($id) {
+                return $query->where('id', '!=', $id);
+            })
+            ->exists()
+        ) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
+    }
+
     public function getAllProducts($filters = [])
     {
         $query = Product::with(['category', 'images']);
@@ -65,13 +87,19 @@ class ProductService
 
     public function createProduct($data)
     {
+        // Generate SKU jika kosong
+        if (empty($data['sku'])) {
+            $data['sku'] = 'PRD-' . strtoupper(Str::random(8));
+        }
+
         $product = Product::create([
             'name' => $data['name'],
-            'slug' => Str::slug($data['name']),
+            'slug' => $this->generateUniqueSlug($data['name']),
             'description' => $data['description'],
             'price' => $data['price'],
             'category_id' => $data['category_id'],
             'collection_id' => $data['collection_id'] ?? null,
+            'sku' => $data['sku'],
             'is_featured' => $data['is_featured'] ?? false,
             'is_active' => $data['is_active'] ?? true,
         ]);
@@ -79,13 +107,30 @@ class ProductService
         // Save sizes
         if (isset($data['sizes']) && is_array($data['sizes'])) {
             foreach ($data['sizes'] as $sizeData) {
-                ProductSize::create([
-                    'product_id' => $product->id,
-                    'size_id' => $sizeData['size_id'],
-                    'stock' => $sizeData['stock'] ?? 0,
-                    'min_stock' => $sizeData['min_stock'] ?? 5,
-                    'price' => $sizeData['price'] ?? $data['price'],
-                ]);
+                // Cek apakah size_id ada atau menggunakan nama ukuran baru
+                if (isset($sizeData['size_id']) && $sizeData['size_id']) {
+                    ProductSize::create([
+                        'product_id' => $product->id,
+                        'size_id' => $sizeData['size_id'],
+                        'stock' => $sizeData['stock'] ?? 0,
+                        'min_stock' => $sizeData['min_stock'] ?? 5,
+                        'price' => $sizeData['price'] ?? $data['price'],
+                    ]);
+                } elseif (isset($sizeData['size_name']) && $sizeData['size_name']) {
+                    // Buat ukuran baru jika nama ukuran diisi
+                    $size = \App\Models\Size::firstOrCreate(
+                        ['name' => $sizeData['size_name']],
+                        ['code' => strtoupper(substr($sizeData['size_name'], 0, 2)), 'is_active' => true]
+                    );
+                    
+                    ProductSize::create([
+                        'product_id' => $product->id,
+                        'size_id' => $size->id,
+                        'stock' => $sizeData['stock'] ?? 0,
+                        'min_stock' => $sizeData['min_stock'] ?? 5,
+                        'price' => $sizeData['price'] ?? $data['price'],
+                    ]);
+                }
             }
         }
 
@@ -111,7 +156,7 @@ class ProductService
 
         $product->update([
             'name' => $data['name'],
-            'slug' => Str::slug($data['name']),
+            'slug' => $this->generateUniqueSlug($data['name'], $id),
             'description' => $data['description'],
             'price' => $data['price'],
             'category_id' => $data['category_id'],
@@ -122,18 +167,29 @@ class ProductService
 
         // Update sizes
         if (isset($data['sizes']) && is_array($data['sizes'])) {
+            // Hapus semua sizes lama
+            $product->sizes()->detach();
+            
             foreach ($data['sizes'] as $sizeData) {
-                ProductSize::updateOrCreate(
-                    [
-                        'product_id' => $product->id,
-                        'size_id' => $sizeData['size_id'],
-                    ],
-                    [
+                if (isset($sizeData['size_id']) && $sizeData['size_id']) {
+                    $product->sizes()->attach($sizeData['size_id'], [
                         'stock' => $sizeData['stock'] ?? 0,
                         'min_stock' => $sizeData['min_stock'] ?? 5,
                         'price' => $sizeData['price'] ?? $data['price'],
-                    ]
-                );
+                    ]);
+                } elseif (isset($sizeData['size_name']) && $sizeData['size_name']) {
+                    // Buat ukuran baru
+                    $size = \App\Models\Size::firstOrCreate(
+                        ['name' => $sizeData['size_name']],
+                        ['code' => strtoupper(substr($sizeData['size_name'], 0, 2)), 'is_active' => true]
+                    );
+                    
+                    $product->sizes()->attach($size->id, [
+                        'stock' => $sizeData['stock'] ?? 0,
+                        'min_stock' => $sizeData['min_stock'] ?? 5,
+                        'price' => $sizeData['price'] ?? $data['price'],
+                    ]);
+                }
             }
         }
 
@@ -159,7 +215,7 @@ class ProductService
         $product = Product::findOrFail($id);
         
         foreach ($product->images as $image) {
-            Storage::delete('public/' . $image->image_path);
+            Storage::disk('public')->delete($image->image_path);
             $image->delete();
         }
 
