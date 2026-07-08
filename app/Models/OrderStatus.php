@@ -21,7 +21,10 @@ class OrderStatus extends Model
         'is_current' => 'boolean',
     ];
 
-    // Relationships
+    // ============================================================
+    // RELATIONSHIPS
+    // ============================================================
+    
     public function order()
     {
         return $this->belongsTo(Order::class);
@@ -32,6 +35,10 @@ class OrderStatus extends Model
         return $this->belongsTo(User::class, 'changed_by');
     }
 
+    // ============================================================
+    // ACCESSORS
+    // ============================================================
+    
     public function getStatusLabelAttribute(): string
     {
         $labels = [
@@ -58,6 +65,10 @@ class OrderStatus extends Model
         return $colors[$this->status] ?? 'secondary';
     }
 
+    // ============================================================
+    // SCOPES
+    // ============================================================
+    
     public function scopeCurrent($query)
     {
         return $query->where('is_current', true);

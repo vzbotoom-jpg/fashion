@@ -62,7 +62,7 @@ Route::middleware(['auth', 'role:admin,super_admin'])
             Route::put('/{id}', [ProductManagementController::class, 'update'])->name('update');
             Route::delete('/{id}', [ProductManagementController::class, 'destroy'])->name('destroy');
 
-            // ✅ Stock Management
+            // Stock Management
             Route::get('/stock', [StockManagementController::class, 'index'])->name('stock.index');
             Route::get('/{id}/stock', [StockManagementController::class, 'edit'])->name('stock.edit');
             Route::put('/{id}/stock', [StockManagementController::class, 'update'])->name('stock.update');
@@ -82,23 +82,28 @@ Route::middleware(['auth', 'role:admin,super_admin'])
             ->except(['show']);
 
         // ============================================================
-        // PRE-ORDER MANAGEMENT
+        // PRE-ORDER MANAGEMENT (HANYA SATU GROUP)
         // ============================================================
         Route::prefix('pre-orders')->name('pre-orders.')->group(function () {
             Route::get('/', [PreOrderManagementController::class, 'index'])->name('index');
             Route::get('/{id}', [PreOrderManagementController::class, 'show'])->name('show');
-            Route::put('/{id}/process', [PreOrderManagementController::class, 'process'])->name('process');
+            Route::get('/{id}/process', [PreOrderManagementController::class, 'process'])->name('process');
+            Route::put('/{id}/process', [PreOrderManagementController::class, 'update'])->name('process');
             Route::delete('/{id}', [PreOrderManagementController::class, 'destroy'])->name('destroy');
+            Route::get('/export', [PreOrderManagementController::class, 'export'])->name('export');
         });
 
         // ============================================================
-        // CUSTOM ORDER MANAGEMENT
+        // CUSTOM ORDER MANAGEMENT (HANYA SATU GROUP)
         // ============================================================
         Route::prefix('custom-orders')->name('custom-orders.')->group(function () {
             Route::get('/', [CustomOrderManagementController::class, 'index'])->name('index');
             Route::get('/{id}', [CustomOrderManagementController::class, 'show'])->name('show');
-            Route::put('/{id}/process', [CustomOrderManagementController::class, 'process'])->name('process');
+            Route::get('/{id}/process', [CustomOrderManagementController::class, 'process'])->name('process');
+            Route::put('/{id}/process', [CustomOrderManagementController::class, 'update'])->name('process');
             Route::delete('/{id}', [CustomOrderManagementController::class, 'destroy'])->name('destroy');
+            Route::get('/export', [CustomOrderManagementController::class, 'export'])->name('export');
+            Route::get('/stats', [CustomOrderManagementController::class, 'stats'])->name('stats');
         });
 
         // ============================================================
@@ -182,5 +187,12 @@ Route::middleware(['auth', 'role:admin,super_admin'])
                     Route::get('/shipping', [SettingController::class, 'shipping'])->name('shipping');
                     Route::put('/shipping', [SettingController::class, 'updateShipping'])->name('shipping.update');
                 });
+
+                // ============================================================
+               // HELP / PANDUAN
+              // ============================================================
+                Route::get('/help', function () {
+                    return view('admin.super.help.index');
+                })->name('help');
             });
     });

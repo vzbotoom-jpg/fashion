@@ -69,6 +69,12 @@ Route::middleware(['auth', 'role:customer'])
             Route::get('/track/{id}', [OrderTrackingController::class, 'track'])->name('track');
         });
 
+        // ✅ ALIAS untuk customer.orders (tanpa .index) untuk kompatibilitas header
+        Route::get('/orders', [OrderTrackingController::class, 'index'])->name('orders');
+
+        // ✅ ALIAS untuk customer.profile
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
+
         // ============================================================
         // PROFILE ROUTES
         // ============================================================

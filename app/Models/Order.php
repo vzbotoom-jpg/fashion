@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Services\SettingService;
 
 class Order extends Model
 {
@@ -49,12 +50,17 @@ class Order extends Model
 
         static::creating(function ($order) {
             if (empty($order->order_number)) {
-                $order->order_number = 'ORD-' . date('Ymd') . '-' . strtoupper(Str::random(6));
+                // ✅ Ambil prefix order dari pengaturan
+                $prefix = app(SettingService::class)->get('order_prefix', 'ORD');
+                $order->order_number = $prefix . '-' . date('Ymd') . '-' . strtoupper(Str::random(6));
             }
         });
     }
 
-    // Relationships
+    // ============================================================
+    // RELATIONSHIPS
+    // ============================================================
+    
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -75,7 +81,10 @@ class Order extends Model
         return $this->hasMany(OrderStatus::class);
     }
 
-    // Scopes
+    // ============================================================
+    // SCOPES
+    // ============================================================
+    
     public function scopePending($query)
     {
         return $query->where('status', 'pending');
@@ -96,7 +105,10 @@ class Order extends Model
         return $query->where('status', 'cancelled');
     }
 
-    // Helper methods
+    // ============================================================
+    // ACCESSORS
+    // ============================================================
+    
     public function getStatusLabelAttribute(): string
     {
         $labels = [
@@ -127,6 +139,10 @@ class Order extends Model
         return 'Rp ' . number_format($this->grand_total, 0, ',', '.');
     }
 
+    // ============================================================
+    // HELPER METHODS
+    // ============================================================
+    
     public function isPaid(): bool
     {
         return $this->payment_status === 'paid';
@@ -169,5 +185,24 @@ class Order extends Model
     public function markAsCompleted()
     {
         $this->update(['status' => 'completed']);
+    }
+
+    public function addStatus($status, $description = null)
+    {
+        // Set all existing statuses to not current
+        $this->statuses()->update(['is_current' => false]);
+
+        // Create new status
+        return $this->statuses()->create([
+            'status' => $status,
+            'description' => $description,
+            'is_current' => true,
+            'changed_by' => auth()->id(),
+        ]);
+    }
+
+    public function getCurrentStatus()
+    {
+        return $this->statuses()->current()->first();
     }
 }

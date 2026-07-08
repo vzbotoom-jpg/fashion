@@ -46,12 +46,18 @@ class StockManagementController extends Controller
      */
     public function update(Request $request, $productId)
     {
-        $validator = Validator::make($request->all(), [
-            'sizes' => 'required|array',
-            'sizes.*.size_id' => 'required|exists:sizes,id',
-            'sizes.*.stock' => 'required|integer|min:0',
-            'sizes.*.min_stock' => 'required|integer|min:0',
-        ]);
+        $product = Product::findOrFail($productId);
+
+        // ✅ Validasi: sizes tidak wajib jika produk tidak memiliki ukuran
+        $rules = [
+            'sizes' => 'nullable|array',
+            'sizes.*.size_id' => 'nullable|exists:sizes,id',
+            'sizes.*.stock' => 'nullable|integer|min:0',
+            'sizes.*.min_stock' => 'nullable|integer|min:0',
+            'sizes.*.price' => 'nullable|numeric|min:0',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -59,9 +65,17 @@ class StockManagementController extends Controller
                 ->withInput();
         }
 
-        $product = Product::findOrFail($productId);
+        // Jika tidak ada data sizes, redirect dengan pesan
+        if (!$request->has('sizes') || empty($request->sizes)) {
+            return redirect()->back()
+                ->with('warning', 'Produk ini belum memiliki ukuran. Silakan tambahkan ukuran terlebih dahulu.');
+        }
 
         foreach ($request->sizes as $sizeData) {
+            if (!isset($sizeData['size_id'])) {
+                continue;
+            }
+
             $productSize = ProductSize::where('product_id', $product->id)
                 ->where('size_id', $sizeData['size_id'])
                 ->first();
@@ -69,15 +83,16 @@ class StockManagementController extends Controller
             if ($productSize) {
                 $oldStock = $productSize->stock;
                 $productSize->update([
-                    'stock' => $sizeData['stock'],
-                    'min_stock' => $sizeData['min_stock'],
+                    'stock' => $sizeData['stock'] ?? 0,
+                    'min_stock' => $sizeData['min_stock'] ?? 5,
+                    'price' => $sizeData['price'] ?? null,
                 ]);
 
                 $this->stockService->logStockChange(
                     $product->id,
                     $sizeData['size_id'],
                     $oldStock,
-                    $sizeData['stock'],
+                    $sizeData['stock'] ?? 0,
                     auth()->id(),
                     'Admin update'
                 );

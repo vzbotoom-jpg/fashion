@@ -24,7 +24,10 @@ class OrderItem extends Model
         'total' => 'decimal:2',
     ];
 
-    // Relationships
+    // ============================================================
+    // RELATIONSHIPS
+    // ============================================================
+    
     public function order()
     {
         return $this->belongsTo(Order::class);
@@ -40,6 +43,10 @@ class OrderItem extends Model
         return $this->belongsTo(Size::class);
     }
 
+    // ============================================================
+    // ACCESSORS
+    // ============================================================
+    
     public function getFormattedPriceAttribute(): string
     {
         return 'Rp ' . number_format($this->price, 0, ',', '.');
@@ -48,5 +55,53 @@ class OrderItem extends Model
     public function getFormattedTotalAttribute(): string
     {
         return 'Rp ' . number_format($this->total, 0, ',', '.');
+    }
+
+    public function getSubtotalAttribute(): float
+    {
+        return $this->price * $this->quantity;
+    }
+
+    // ============================================================
+    // SCOPES
+    // ============================================================
+    
+    public function scopeByProduct($query, $productId)
+    {
+        return $query->where('product_id', $productId);
+    }
+
+    public function scopeByOrder($query, $orderId)
+    {
+        return $query->where('order_id', $orderId);
+    }
+
+    // ============================================================
+    // HELPER METHODS
+    // ============================================================
+    
+    public function updateTotal()
+    {
+        $this->total = $this->price * $this->quantity;
+        $this->save();
+        return $this;
+    }
+
+    public static function getTotalQuantitySold($productId)
+    {
+        return static::whereHas('order', function ($query) {
+                $query->where('status', 'completed');
+            })
+            ->where('product_id', $productId)
+            ->sum('quantity');
+    }
+
+    public static function getTotalRevenue($productId)
+    {
+        return static::whereHas('order', function ($query) {
+                $query->where('status', 'completed');
+            })
+            ->where('product_id', $productId)
+            ->sum('total');
     }
 }
