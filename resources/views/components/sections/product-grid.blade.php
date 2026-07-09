@@ -23,7 +23,7 @@
         </div>
         
         <!-- Products Grid -->
-        <div class="grid grid-cols-2 lg:grid-cols-{{ $columns }} gap-6 md:gap-8">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-{{ $columns }} gap-6 md:gap-8 items-start">
             @forelse($products as $product)
                 <x-sections.product-card :product="$product" />
             @empty

@@ -76,7 +76,7 @@
 
         <!-- Products Grid -->
         @if($products->isNotEmpty())
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 items-start">
                 @foreach($products as $product)
                     <x-sections.product-card :product="$product" />
                 @endforeach
