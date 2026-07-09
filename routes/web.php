@@ -7,6 +7,7 @@ use App\Http\Controllers\Frontend\CollectionController;
 use App\Http\Controllers\Frontend\GalleryController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\AboutController;
+use App\Http\Controllers\Frontend\PaymentController;
 use App\Services\CartService;
 use App\Http\Controllers\Auth\SocialLoginController;
 
@@ -70,6 +71,17 @@ Route::prefix('register')->name('register.')->group(function () {
     Route::get('/google/callback', [SocialLoginController::class, 'handleGoogleRegisterCallback'])->name('google.callback');
     Route::get('/github', [SocialLoginController::class, 'redirectToGithubRegister'])->name('github');
     Route::get('/github/callback', [SocialLoginController::class, 'handleGithubRegisterCallback'])->name('github.callback');
+});
+
+// ============================================================
+// PAYMENT ROUTES
+// ============================================================
+Route::prefix('payment')->name('payment.')->group(function () {
+    Route::get('/midtrans/{payment}', [PaymentController::class, 'midtrans'])->name('midtrans');
+    Route::post('/midtrans/callback', [PaymentController::class, 'callback'])->name('midtrans.callback');
+    Route::get('/midtrans/success', [PaymentController::class, 'success'])->name('midtrans.success');
+    Route::get('/midtrans/pending', [PaymentController::class, 'pending'])->name('midtrans.pending');
+    Route::get('/midtrans/error', [PaymentController::class, 'error'])->name('midtrans.error');
 });
 
 // Privacy Policy & Terms

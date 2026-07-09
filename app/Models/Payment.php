@@ -23,15 +23,22 @@ class Payment extends Model
         'expired_at',
         'payment_proof',
         'notes',
+        'midtrans_enabled',
+        'snap_token',
+        'midtrans_response',
     ];
 
     protected $casts = [
         'amount' => 'decimal:2',
         'paid_at' => 'datetime',
         'expired_at' => 'datetime',
+        'midtrans_enabled' => 'boolean',
     ];
 
-    // Relationships
+    // ============================================================
+    // RELATIONSHIPS
+    // ============================================================
+    
     public function payable()
     {
         return $this->morphTo();
@@ -42,6 +49,10 @@ class Payment extends Model
         return $this->belongsTo(Order::class);
     }
 
+    // ============================================================
+    // ACCESSORS
+    // ============================================================
+    
     public function getStatusLabelAttribute(): string
     {
         $labels = [
@@ -50,6 +61,7 @@ class Payment extends Model
             'failed' => 'Gagal',
             'cancelled' => 'Dibatalkan',
             'refunded' => 'Dikembalikan',
+            'expired' => 'Kadaluarsa',
         ];
         return $labels[$this->status] ?? $this->status;
     }
@@ -62,6 +74,7 @@ class Payment extends Model
             'failed' => 'danger',
             'cancelled' => 'secondary',
             'refunded' => 'info',
+            'expired' => 'danger',
         ];
         return $colors[$this->status] ?? 'secondary';
     }
@@ -71,6 +84,10 @@ class Payment extends Model
         return 'Rp ' . number_format($this->amount, 0, ',', '.');
     }
 
+    // ============================================================
+    // CHECK METHODS
+    // ============================================================
+    
     public function isPending(): bool
     {
         return $this->status === 'pending';
@@ -91,6 +108,20 @@ class Payment extends Model
         return $this->status === 'refunded';
     }
 
+    public function isExpired(): bool
+    {
+        return $this->status === 'expired';
+    }
+
+    public function isMidtransEnabled(): bool
+    {
+        return (bool) $this->midtrans_enabled;
+    }
+
+    // ============================================================
+    // STATUS UPDATE METHODS
+    // ============================================================
+    
     public function markAsCompleted()
     {
         $this->update([
@@ -114,5 +145,60 @@ class Payment extends Model
     public function markAsRefunded()
     {
         $this->update(['status' => 'refunded']);
+    }
+
+    public function markAsExpired()
+    {
+        $this->update(['status' => 'expired']);
+    }
+
+    public function markAsCancelled()
+    {
+        $this->update(['status' => 'cancelled']);
+    }
+
+    // ============================================================
+    // HELPER METHODS
+    // ============================================================
+    
+    public function getPaymentInstructions()
+    {
+        if ($this->payment_method === 'bank_transfer') {
+            return [
+                'bank' => app(\App\Services\SettingService::class)->get('bank_transfer_account', 'BCA'),
+                'account_number' => app(\App\Services\SettingService::class)->get('bank_transfer_number', '1234567890'),
+                'account_name' => app(\App\Services\SettingService::class)->get('bank_transfer_name', 'PT Fashion Indonesia'),
+                'amount' => $this->formatted_amount,
+                'code' => $this->payment_code,
+            ];
+        }
+
+        if ($this->payment_method === 'e_wallet') {
+            return [
+                'provider' => 'OVO / GoPay / DANA',
+                'code' => $this->payment_code,
+                'amount' => $this->formatted_amount,
+            ];
+        }
+
+        if ($this->payment_method === 'qris') {
+            return [
+                'code' => $this->payment_code,
+                'amount' => $this->formatted_amount,
+            ];
+        }
+
+        return [
+            'code' => $this->payment_code,
+            'amount' => $this->formatted_amount,
+        ];
+    }
+
+    public function getMidtransSnapUrl()
+    {
+        if ($this->snap_token) {
+            return 'https://app.midtrans.com/snap/v2/vtweb/' . $this->snap_token;
+        }
+        return null;
     }
 }
